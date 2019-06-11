@@ -1,0 +1,59 @@
+FROM arm32v7/alpine:edge as builder
+
+ARG aria_version
+ARG make_jobs=4
+
+COPY qemu-arm-static /usr/bin/
+
+RUN apk add --no-cache \
+      expat-dev \
+      openssl-dev \
+      cppunit-dev \
+      c-ares-dev \
+      libssh2-dev \
+      zlib-dev \
+      gettext-dev \
+      file \
+      gettext \
+      ca-certificates \
+      g++ \
+      make \
+      automake \
+      autoconf \
+      libtool \
+      git && \
+    git clone https://github.com/aria2/aria2 && \
+    cd /aria2 && \
+    git checkout "${aria_version}" && \
+    autoreconf -i && \
+    ./configure ARIA2_STATIC=yes CFLAGS="-O3 -pipe -fomit-frame-pointer" CXXFLAGS="-O3 -pipe -fomit-frame-pointer" \
+                --enable-ssl \
+                --enable-bittorrent \
+                --enable-metalink \
+                --enable-websocket \
+                --enable-epoll \
+                --enable-largefile \
+                --disable-nls \
+                --without-libxml2 \
+                --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' && \
+    make -j"${make_jobs}" && \
+    make install
+
+FROM scratch as static
+
+COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+EXPOSE 6800
+
+ENTRYPOINT ["aria2c"]
+
+FROM arm32v7/busybox:musl as embedded
+
+COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
+EXPOSE 6800
+
+ENTRYPOINT ["aria2c"]
+

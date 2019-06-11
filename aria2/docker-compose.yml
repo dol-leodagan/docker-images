@@ -1,0 +1,71 @@
+version: '3.4'
+
+services:
+  aria2-build-1.34:
+    build:
+      context: .
+      target: static
+      args:
+        aria_version: tags/release-1.34.0
+    image: leodagan/aria2:1.34
+
+  aria2-build-edge:
+    build:
+      context: .
+      target: static
+      args:
+        aria_version: master
+    image: leodagan/aria2:edge
+
+  aria2-busybox-1.34:
+    build:
+      context: .
+      target: embedded
+      args:
+        aria_version: tags/release-1.34.0
+    image: leodagan/aria2:busybox-1.34
+
+  aria2-busybox-edge:
+    build:
+      context: .
+      target: embedded
+      args:
+        aria_version: master
+    image: leodagan/aria2:busybox-edge
+
+  aria2-build-1.34-arm32v7:
+    build:
+      dockerfile: Dockerfile.arm32v7
+      context: .
+      target: static
+      args:
+        aria_version: tags/release-1.34.0
+    image: leodagan/aria2:1.34
+
+  aria2-build-edge-arm32v7:
+    build:
+      dockerfile: Dockerfile.arm32v7
+      context: .
+      target: static
+      args:
+        aria_version: master
+    image: leodagan/aria2:edge
+
+  aria2-busybox-1.34-arm32v7:
+    build:
+      dockerfile: Dockerfile.arm32v7
+      context: .
+      target: embedded
+      args:
+        aria_version: tags/release-1.34.0
+    image: leodagan/aria2:busybox-1.34
+
+  aria2-busybox-edge-arm32v7:
+    build:
+      dockerfile: Dockerfile.arm32v7
+      context: .
+      target: embedded
+      args:
+        aria_version: master
+    image: leodagan/aria2:busybox-edge
+
