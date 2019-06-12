@@ -47,7 +47,7 @@ for arch in amd64 arm32v6 arm32v7 arm64v8; do
         curl -sL "${QEMU_USER_STATIC_DOWNLOAD_URL}/${QEMU_USER_STATIC_LATEST_TAG}/x86_64_qemu-${qemu_arch}-static.tar.gz" \
             | tar xzv
 
-        sed "s/__DOCKER_ARCH__/${arch}/g" "s/__QEMU_ARCH__/${qemu_arch}/g" "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${arch}"
+        sed -e "s/__DOCKER_ARCH__/${arch}/g" -e "s/__QEMU_ARCH__/${qemu_arch}/g" "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${arch}"
 
         docker run --rm --privileged multiarch/qemu-user-static:register --reset
     fi
