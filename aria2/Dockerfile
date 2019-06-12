@@ -1,4 +1,4 @@
-FROM alpine:edge as builder
+FROM alpine:latest as builder
 
 ARG aria_version
 ARG make_jobs=4
