@@ -1,7 +1,9 @@
-FROM alpine:latest as builder
+FROM __DOCKER_ARCH__/alpine:latest as builder
 
 ARG aria_version
 ARG make_jobs=4
+
+COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
 RUN apk add --no-cache \
       expat-dev \
@@ -46,7 +48,7 @@ EXPOSE 6800
 
 ENTRYPOINT ["aria2c"]
 
-FROM busybox:musl as embedded
+FROM __DOCKER_ARCH__/busybox:musl as embedded
 
 COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt

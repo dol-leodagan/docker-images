@@ -21,9 +21,41 @@ case "${DOCKER_TAG}" in
         ;;
 esac
 
-docker build \
-    --file "${DOCKERFILE_PATH}" \
-    --build-arg aria_version="${ARIA_VERSION}" \
-    --tag "${IMAGE_NAME}" \
-    "$@" \
-    .
+for arch in amd64 arm32v6 arm32v7 arm64v8; do
+    if [ "${arch}" = "amd64" ]; then
+        sed "s/__DOCKER_ARCH__/${arch}/g" "/__QEMU_ARCH__/d" "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${arch}"
+    else
+        case "${arch}" in
+            'arm32v6'|'arm32v7')
+                qemu_arch='arm'
+                ;;
+            'arm64v8')
+                qemu_arch='aarch64'
+                ;;
+            *)
+                echo "No available QEMU Arch for Docker Arch: ${arch}"
+                exit 1
+                ;;
+        esac
+
+        QEMU_USER_STATIC_DOWNLOAD_URL="https://github.com/multiarch/qemu-user-static/releases/download"
+        QEMU_USER_STATIC_LATEST_TAG=$(wget -O- https://api.github.com/repos/multiarch/qemu-user-static/tags \
+            | grep 'name.*v[0-9]' \
+            | head -n 1 \
+            | cut -d '"' -f 4)
+
+        wget -O- "${QEMU_USER_STATIC_DOWNLOAD_URL}/${QEMU_USER_STATIC_LATEST_TAG}/x86_64_qemu-${qemu_arch}-static.tar.gz" \
+            | tar xzv
+
+        sed "s/__DOCKER_ARCH__/${arch}/g" "s/__QEMU_ARCH__/${qemu_arch}/g" "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${arch}"
+
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    fi
+
+    docker build \
+        --file "${DOCKERFILE_PATH}.${arch}" \
+        --build-arg aria_version="${ARIA_VERSION}" \
+        --tag "${IMAGE_NAME}-${arch}" \
+        "$@" \
+        .
+done
