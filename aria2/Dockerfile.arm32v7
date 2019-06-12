@@ -1,4 +1,4 @@
-FROM arm32v7/alpine:edge as builder
+FROM arm32v7/alpine:latest as builder
 
 ARG aria_version
 ARG make_jobs=4
