@@ -25,4 +25,5 @@ docker build \
     --file "${DOCKERFILE_PATH}" \
     --build-arg aria_version="${ARIA_VERSION}" \
     --tag "${IMAGE_NAME}" \
-    "$@"
+    "$@" \
+    .
