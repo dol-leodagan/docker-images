@@ -1,12 +1,34 @@
 #!/usr/bin/env sh
 
-for arch in amd64 arm32v6 arm32v7 arm64v8; do
-    docker push "${IMAGE_NAME}-${arch}"
-done;
+set -x
 
-docker manifest create "${IMAGE_NAME}" "${IMAGE_NAME}-amd64" "${IMAGE_NAME}-arm32v6" "${IMAGE_NAME}-arm32v7" "${IMAGE_NAME}-arm32v8"
-docker manifest annotate "${IMAGE_NAME}" "${IMAGE_NAME}-amd64" --os linux --arch amd64
-docker manifest annotate "${IMAGE_NAME}" "${IMAGE_NAME}-arm32v6" --os linux --arch arm --variant armv6
-docker manifest annotate "${IMAGE_NAME}" "${IMAGE_NAME}-arm32v7" --os linux --arch arm --variant armv7
-docker manifest annotate "${IMAGE_NAME}" "${IMAGE_NAME}-arm32v8" --os linux --arch arm64 --variant armv8
-docker manifest push "${IMAGE_NAME}"
+docker push "${IMAGE_NAME}"
+
+case "${DOCKER_TAG}" in
+    'latest') docker push "${DOCKER_REPO}:1.34" ;;
+    'latest-arm32v6') docker push "${DOCKER_REPO}:1.34-arm32v6" ;;
+    'latest-arm32v7') docker push "${DOCKER_REPO}:1.34-arm32v7" ;;
+    'latest-arm64v8') docker push "${DOCKER_REPO}:1.34-arm64v7" ;;
+    'busybox') docker push "${DOCKER_REPO}:1.34-busybox" ;;
+    'busybox-arm32v6') docker push "${DOCKER_REPO}:1.34-busybox-arm32v6" ;;
+    'busybox-arm32v7') docker push "${DOCKER_REPO}:1.34-busybox-arm32v7" ;;
+    'busybox-arm64v8') docker push "${DOCKER_REPO}:1.34-busybox-arm64v7" ;;
+esac
+
+case "${DOCKER_TAG}" in
+    'latest'*) DOCKER_MANIFEST="${DOCKER_REPO}:latest ${DOCKER_REPO}:1.34" ;;
+    'busybox'*) DOCKER_MANIFEST="${DOCKER_REPO}:busybox ${DOCKER_REPO}:1.34-busybox" ;;
+    'edge-busybox'*) DOCKER_MANIFEST="${DOCKER_REPO}:edge-busybox" ;;
+    'edge'*) DOCKER_MANIFEST="${DOCKER_REPO}:edge" ;;
+esac
+
+for manifest in ${DOCKER_MANIFEST}; do
+
+    docker manifest create "${manifest}" "${manifest}" "${manifest}-arm32v6" "${manifest}-arm32v7" "${manifest}-arm32v8"
+    docker manifest annotate "${manifest}" "${manifest}" --os linux --arch amd64
+    docker manifest annotate "${manifest}" "${manifest}-arm32v6" --os linux --arch arm --variant armv6
+    docker manifest annotate "${manifest}" "${manifest}-arm32v7" --os linux --arch arm --variant armv7
+    docker manifest annotate "${manifest}" "${manifest}-arm64v8" --os linux --arch arm64 --variant armv8
+    docker manifest push "${manifest}"
+
+done
