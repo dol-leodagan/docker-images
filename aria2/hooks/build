@@ -6,7 +6,7 @@ prepare()
 {
     if [ "${DOCKER_ARCH}x" = "x" ] || [ "${DOCKER_ARCH}" = "amd64" ]; then
         sed \
-            -e "s/__DOCKER_ARCH__/${DOCKER_ARCH}/g" \
+            -e "s/__DOCKER_ARCH__/amd64/g" \
             -e "/__QEMU_ARCH__/d" \
             "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
     else
