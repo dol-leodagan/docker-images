@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build-latest-amd64:
+  aria2-build-latest-amd64:
     machine: true
     steps:
       - checkout
@@ -13,7 +13,7 @@ jobs:
             DOCKERFILE_PATH: Dockerfile
             DOCKER_REPO: leodagan/aria2
             DOCKER_TAG: latest
-  build-latest-arm32v6:
+  aria2-build-latest-arm32v6:
     machine: true
     steps:
       - checkout
@@ -25,7 +25,7 @@ jobs:
             DOCKERFILE_PATH: Dockerfile
             DOCKER_REPO: leodagan/aria2
             DOCKER_TAG: latest-arm32v6
-  build-latest-arm32v7:
+  aria2-build-latest-arm32v7:
     machine: true
     steps:
       - checkout
@@ -37,7 +37,7 @@ jobs:
             DOCKERFILE_PATH: Dockerfile
             DOCKER_REPO: leodagan/aria2
             DOCKER_TAG: latest-arm32v7
-  build-latest-arm64v8:
+  aria2-build-latest-arm64v8:
     machine: true
     steps:
       - checkout
@@ -49,7 +49,7 @@ jobs:
             DOCKERFILE_PATH: Dockerfile
             DOCKER_REPO: leodagan/aria2
             DOCKER_TAG: latest-arm64v8
-  test-latest-amd64:
+  aria2-test-latest-amd64:
     machine: true
     steps:
       - run:
@@ -57,7 +57,7 @@ jobs:
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
             <<: *env-amd64
-  test-latest-arm32v6:
+  aria2-test-latest-arm32v6:
     machine: true
     steps:
       - run:
@@ -65,7 +65,7 @@ jobs:
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
             <<: *env-arm32v6
-  test-latest-arm32v7:
+  aria2-test-latest-arm32v7:
     machine: true
     steps:
       - run:
@@ -73,7 +73,7 @@ jobs:
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
             <<: *env-arm32v7
-  test-latest-arm64v8:
+  aria2-test-latest-arm64v8:
     machine: true
     steps:
       - run:
@@ -83,9 +83,9 @@ jobs:
             <<: *env-arm64v8
 workflows:
   version: 2
-  build-test-and-deploy-latest:
+  aria2-latest:
     jobs:
-      - build-latest-amd64
-      - test-amd64:
+      - aria2-build-latest-amd64
+      - aria2-test-latest-amd64:
           requires:
-            - build-latest-amd64
+            - aria2-build-latest-amd64
