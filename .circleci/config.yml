@@ -1,14 +1,93 @@
 version: 2
+
+
+
 jobs:
- build:
-   machine: true
-   steps:
-     - checkout
-     - run:
-         name: Aria 2 arm32v7
-         command: cd "${PROJECT_BUILD_DIR}" && ./hooks/build
-         environment:
-           PROJECT_BUILD_DIR: aria2
-           DOCKERFILE_PATH: Dockerfile
-           DOCKER_REPO: leodagan/aria2
-           DOCKER_TAG: latest-arm32v7
+  build-latest-amd64:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: aria2 amd64
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/build
+          environment: &env-amd64
+            PROJECT_BUILD_DIR: aria2
+            DOCKERFILE_PATH: Dockerfile
+            DOCKER_REPO: leodagan/aria2
+            DOCKER_TAG: latest
+  build-latest-arm32v6:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: aria2 arm32v6
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/build
+          environment: &env-arm32v6
+            PROJECT_BUILD_DIR: aria2
+            DOCKERFILE_PATH: Dockerfile
+            DOCKER_REPO: leodagan/aria2
+            DOCKER_TAG: latest-arm32v6
+  build-latest-arm32v7:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: aria2 arm32v7
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/build
+          environment: &env-arm32v7
+            PROJECT_BUILD_DIR: aria2
+            DOCKERFILE_PATH: Dockerfile
+            DOCKER_REPO: leodagan/aria2
+            DOCKER_TAG: latest-arm32v7
+  build-latest-arm64v8:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: aria2 arm64v8
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/build
+          environment: &env-arm64v8
+            PROJECT_BUILD_DIR: aria2
+            DOCKERFILE_PATH: Dockerfile
+            DOCKER_REPO: leodagan/aria2
+            DOCKER_TAG: latest-arm64v8
+  test-latest-amd64:
+    machine: true
+    steps:
+      - run:
+          name: test aria2 amd64
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
+          environment:
+            <<: &env-amd64
+  test-latest-arm32v6:
+    machine: true
+    steps:
+      - run:
+          name: test aria2 amd64
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
+          environment:
+            <<: &env-arm32v6
+  test-latest-arm32v7:
+    machine: true
+    steps:
+      - run:
+          name: test aria2 amd64
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
+          environment:
+            <<: &env-arm32v7
+  test-latest-arm64v8:
+    machine: true
+    steps:
+      - run:
+          name: test aria2 amd64
+          command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
+          environment:
+            <<: &env-arm64v8
+workflows:
+  version: 2
+  build-test-and-deploy-latest:
+    jobs:
+      - build-latest-amd64
+      - test-amd64:
+          requires:
+            - build-latest-amd64
