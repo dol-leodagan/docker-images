@@ -1,27 +1,30 @@
-version: 2
-
-jobs:
-  aria2-executor-default: &aria2-executor-defaults
+aria2-config:
+  executor: &aria2-executor-defaults
     machine: true
     working_directory: ~/
 
-  aria2-defaults:
-    environment: &aria2-env
-      DOCKERFILE_PATH: Dockerfile
-      DOCKER_REPO: leodagan/aria2
-    steps:
-      - attach_workspace: &aria2-attach-workspace
-          at: ~/
-      - persist_to_workspace: &aria2-persist-workspace
-          root: ~/
-          paths:
-            - aria2
-      - run: &aria2-build-command cd ~/aria2 && ./hooks/build
-      - run: &aria2-save-command cd ~/aria2 && docker save -o "aria2-${DOCKER_TAG}.tar" "${DOCKER_REPO}:${DOCKER_TAG}"
-      - run: &aria2-load-command cd ~/aria2 && docker load < "aria2-${DOCKER_TAG}.tar"
-      - run: &aria2-test-command cd ~/aria2 && ./hooks/test
+  environment: &aria2-env
+    DOCKERFILE_PATH: Dockerfile
+    DOCKER_REPO: leodagan/aria2
 
-        
+  attach_step: &aria2-attach-workspace
+    attach_workspace:
+      at: ~/
+  persist_step: &aria2-persist-workspace
+    persist_to_workspace:
+      root: ~/
+      paths:
+        - aria2
+
+  build_cmd: &aria2-build-command cd ~/aria2 && ./hooks/build
+  save_cmd: &aria2-save-command cd ~/aria2 && docker save -o "aria2-${DOCKER_TAG}.tar" "${DOCKER_REPO}:${DOCKER_TAG}"
+  load_cmd: &aria2-load-command cd ~/aria2 && docker load < "aria2-${DOCKER_TAG}.tar"
+  test_cmd: &aria2-test-command cd ~/aria2 && ./hooks/test
+
+
+version: 2
+
+jobs:
   aria2-build-latest-amd64:
     <<: *aria2-executor-defaults
     steps:
