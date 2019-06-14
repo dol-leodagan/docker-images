@@ -1,0 +1,12 @@
+version: 2
+jobs:
+ build:
+   machine: true
+   steps:
+     - checkout
+     - run: cd "${PROJECT_BUILD_DIR}" && ./hooks/build
+       environment:
+         PROJECT_BUILD_DIR: aria2
+         DOCKERFILE_PATH: Dockerfile
+         DOCKER_REPO:leodagan/aria2
+         DOCKER_TAG=latest-arm32v7
