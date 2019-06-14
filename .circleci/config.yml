@@ -1,12 +1,10 @@
-aria2-config:
+aria2-matrix:
   executor: &aria2-executor-defaults
     machine: true
     working_directory: ~/docker
-
   environment: &aria2-env
     DOCKERFILE_PATH: Dockerfile
     DOCKER_REPO: leodagan/aria2
-
   attach_step: &aria2-attach-workspace
     attach_workspace:
       at: ~/
@@ -16,11 +14,49 @@ aria2-config:
       paths:
         - docker
 
-  build_cmd: &aria2-build-command cd aria2 && ./hooks/build
-  save_cmd: &aria2-save-command cd aria2 && docker save -o "aria2-${DOCKER_TAG}.tar" "${DOCKER_REPO}:${DOCKER_TAG}"
-  load_cmd: &aria2-load-command cd aria2 && docker load < "aria2-${DOCKER_TAG}.tar"
-  test_cmd: &aria2-test-command cd aria2 && ./hooks/test
+  build-cmd: &aria2-build-command |
+    cd aria2
+    ./hooks/build
+    docker save -o "aria2-${DOCKER_TAG}.tar" "${DOCKER_REPO}:${DOCKER_TAG}"
+    docker save -o "aria2-${EMBED_TAG}.tar" "${DOCKER_REPO}:${EMBED_TAG}"
+  test-cmd: &aria2-test-command |
+    cd aria2
+    docker load < "aria2-${DOCKER_TAG}.tar"
+    docker load < "aria2-${EMBED_TAG}.tar"
+    docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    ./hooks/test
 
+  amd64:
+    env: &aria2-env-amd64
+      <<: *aria2-env
+      DOCKER_TAG: latest
+      EMBED_TAG: busybox
+    build: &aria2-build-amd64
+      run:
+        command: *aria2-build-command
+        environment:
+          <<: *aria2-env-amd64
+    test: &aria2-test-amd64
+      run:
+        command: *aria2-test-command
+        environment:
+          <<: *aria2-env-amd64
+
+  arm32v7:
+    env: &aria2-env-arm32v7
+      <<: *aria2-env
+      DOCKER_TAG: latest-arm32v7
+      EMBED_TAG: busybox-arm32v7
+    build: &aria2-build-arm32v7
+      run:
+        command: *aria2-build-command
+        environment:
+          <<: *aria2-env-arm32v7
+    test: &aria2-test-arm32v7
+      run:
+        command: *aria2-test-command
+        environment:
+          <<: *aria2-env-arm32v7
 
 version: 2
 
@@ -36,78 +72,27 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
-      - run:
-          name: aria2 amd64
-          command: *aria2-build-command
-          environment: &aria2-env-amd64
-            <<: *aria2-env
-            DOCKER_TAG: latest
-      - run:
-          command: *aria2-save-command
-          environment:
-            <<: *aria2-env-amd64
-      - run:
-          command: cd aria2 && docker save -o "busybox.tar" "${DOCKER_REPO}:busybox"
-          environment:
-            <<: *aria2-env-amd64
+      - *aria2-build-amd64
       - *aria2-persist-workspace
 
   aria2-test-latest-amd64:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
-      - run:
-          command: *aria2-load-command
-          environment:
-            <<: *aria2-env-amd64
-      - run:
-          command: cd aria2 && docker load < "busybox.tar"
-          environment:
-            <<: *aria2-env-amd64
-      - run:
-          name: test aria2 amd64
-          command: *aria2-test-command
-          environment:
-            <<: *aria2-env-amd64
+      - *aria2-test-amd64
 
   aria2-build-latest-arm32v7:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
-      - run:
-          name: aria2 arm32v7
-          command: *aria2-build-command
-          environment: &aria2-env-arm32v7
-            <<: *aria2-env
-            DOCKER_TAG: latest-arm32v7
-      - run:
-          command: *aria2-save-command
-          environment:
-            <<: *aria2-env-arm32v7
-      - run:
-          command: cd aria2 && docker save -o "busybox-arm32v7.tar" "${DOCKER_REPO}:busybox-arm32v7"
-          environment:
-            <<: *aria2-env-arm32v7
+      - *aria2-build-arm32v7
       - *aria2-persist-workspace
 
   aria2-test-latest-arm32v7:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
-      - run:
-          command: *aria2-load-command
-          environment:
-            <<: *aria2-env-arm32v7
-      - run:
-          command: cd aria2 && docker load < "busybox-arm32v7.tar"
-          environment:
-            <<: *aria2-env-arm32v7
-      - run:
-          name: test aria2 arm32v7
-          command: *aria2-test-command
-          environment:
-            <<: *aria2-env-arm32v7
-
+      - *aria2-test-arm32v7
 
 workflows:
   version: 2
