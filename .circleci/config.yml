@@ -85,7 +85,7 @@ jobs:
           environment:
             <<: *aria2-env-arm32v7
       - run:
-          command: cd aria2 && docker save -o "busybox-arm32v7.tar" "${DOCKER_REPO}:busybox"
+          command: cd aria2 && docker save -o "busybox-arm32v7.tar" "${DOCKER_REPO}:busybox-arm32v7"
           environment:
             <<: *aria2-env-arm32v7
       - *aria2-persist-workspace
