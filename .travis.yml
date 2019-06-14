@@ -4,7 +4,13 @@ services:
   - docker
 
 env:
-  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=latest IMAGE_NAME=leodagan/aria2:latest
-  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=latest-arm32v7 IMAGE_NAME=leodagan/aria2:latest-arm32v7
+  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=latest
+#  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=latest-arm32v6
+  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=latest-arm32v7
+#  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=latest-arm64v8
+#  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=edge
+#  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=edge-arm32v6
+#  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=edge-arm32v7
+#  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_REPO=leodagan/aria2 DOCKER_TAG=edge-arm64v8
 
 script: cd "$PROJECT_BUILD_DIR" && ./hooks/build
