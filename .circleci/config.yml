@@ -1,7 +1,5 @@
 version: 2
 
-
-
 jobs:
   build-latest-amd64:
     machine: true
@@ -58,7 +56,7 @@ jobs:
           name: test aria2 amd64
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
-            <<: &env-amd64
+            <<: *env-amd64
   test-latest-arm32v6:
     machine: true
     steps:
@@ -66,7 +64,7 @@ jobs:
           name: test aria2 amd64
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
-            <<: &env-arm32v6
+            <<: *env-arm32v6
   test-latest-arm32v7:
     machine: true
     steps:
@@ -74,7 +72,7 @@ jobs:
           name: test aria2 amd64
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
-            <<: &env-arm32v7
+            <<: *env-arm32v7
   test-latest-arm64v8:
     machine: true
     steps:
@@ -82,7 +80,7 @@ jobs:
           name: test aria2 amd64
           command: cd "${PROJECT_BUILD_DIR}" && ./hooks/test
           environment:
-            <<: &env-arm64v8
+            <<: *env-arm64v8
 workflows:
   version: 2
   build-test-and-deploy-latest:
