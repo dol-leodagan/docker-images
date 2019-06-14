@@ -1,0 +1,10 @@
+language: sh
+
+services:
+  - docker
+
+env:
+  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_TAG=latest IMAGE_NAME=leodagan/aria2:latest
+  - PROJECT_BUILD_DIR=aria2 DOCKERFILE_PATH=Dockerfile DOCKER_TAG=latest IMAGE_NAME=leodagan/aria2:latest-arm32v7
+
+script: cd "$PROJECT_BUILD_DIR" && ./hooks/build
