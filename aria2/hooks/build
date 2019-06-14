@@ -40,6 +40,7 @@ build()
 case "${DOCKER_TAG}" in
     'latest')
         ARIA_VERSION='tags/release-1.34.0'
+        DOCKER_ARCH='amd64'
         prepare
         build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34"
         build --target embedded --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:1.34-busybox"
