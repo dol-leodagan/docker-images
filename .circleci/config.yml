@@ -76,7 +76,8 @@ workflows:
     jobs:
       - docker-checkout
       - aria2-build-latest-amd64:
-          requires: docker-checkout
+          requires:
+            - docker-checkout
       - aria2-test-latest-amd64:
           requires:
             - aria2-build-latest-amd64
