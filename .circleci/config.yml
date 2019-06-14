@@ -8,5 +8,5 @@ jobs:
        environment:
          PROJECT_BUILD_DIR: aria2
          DOCKERFILE_PATH: Dockerfile
-         DOCKER_REPO:leodagan/aria2
-         DOCKER_TAG=latest-arm32v7
+         DOCKER_REPO: leodagan/aria2
+         DOCKER_TAG: latest-arm32v7
