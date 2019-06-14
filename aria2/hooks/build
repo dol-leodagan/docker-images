@@ -2,58 +2,66 @@
 
 set -x
 
+prepare()
+{
+    if [ "${DOCKER_ARCH}x" = "x" ] || [ "${DOCKER_ARCH}" = "amd64" ]; then
+        sed \
+            -e "s/__DOCKER_ARCH__/${DOCKER_ARCH}/g" \
+            -e "/__QEMU_ARCH__/d" \
+            "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
+    else
+        QEMU_USER_STATIC_DOWNLOAD_URL="https://github.com/multiarch/qemu-user-static/releases/download"
+        QEMU_USER_STATIC_LATEST_TAG=$(curl -sL https://api.github.com/repos/multiarch/qemu-user-static/tags \
+            | grep 'name.*v[0-9]' \
+            | head -n 1 \
+            | cut -d '"' -f 4)
+
+        curl -sL "${QEMU_USER_STATIC_DOWNLOAD_URL}/${QEMU_USER_STATIC_LATEST_TAG}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz" \
+            | tar xzv
+
+        sed \
+            -e "s/__DOCKER_ARCH__/${DOCKER_ARCH}/g" \
+            -e "s/__QEMU_ARCH__/${QEMU_ARCH}/g" \
+            "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
+
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+    fi
+}
+
+build()
+{
+    docker build \
+        --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
+        --build-arg aria_version="${ARIA_VERSION}" \
+        "$@" \
+        .
+}
+
 case "${DOCKER_TAG}" in
     'latest')
         ARIA_VERSION='tags/release-1.34.0'
-        DOCKER_ARCH='amd64'
-        set -- --tag "${DOCKER_REPO}:1.34" --target static
+        prepare
+        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34"
+        build --target embedded --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:1.34-busybox"
         ;;
     'latest-arm32v7')
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
-        set -- --tag "${DOCKER_REPO}:1.34-arm32v7" --target static
-        ;;
-    'busybox')
-        ARIA_VERSION='tags/release-1.34.0'
-        set -- --tag "${DOCKER_REPO}:1.34-busybox" --target embedded
+        prepare
+        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v7"
+        build --target embedded --tag "${DOCKER_REPO}:busybox-arm32v7" --tag "${DOCKER_REPO}:1.34-busybox-arm32v7"
         ;;
     'edge')
         ARIA_VERSION='master'
-        set -- --target static
+        prepare
+        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        build --target embedded --tag "${DOCKER_REPO}:edge-busybox"
         ;;
-    'edge-busybox')
+    'edge-arm32v7')
         ARIA_VERSION='master'
-        set -- --target embedded
+        prepare
+        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        build --target embedded --tag "${DOCKER_REPO}:edge-busybox-arm32v7"
         ;;
 esac
-
-if [ "${DOCKER_ARCH}" = "amd64" ]; then
-    sed \
-        -e "s/__DOCKER_ARCH__/${DOCKER_ARCH}/g" \
-        -e "/__QEMU_ARCH__/d" \
-        "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
-else
-    QEMU_USER_STATIC_DOWNLOAD_URL="https://github.com/multiarch/qemu-user-static/releases/download"
-    QEMU_USER_STATIC_LATEST_TAG=$(curl -sL https://api.github.com/repos/multiarch/qemu-user-static/tags \
-        | grep 'name.*v[0-9]' \
-        | head -n 1 \
-        | cut -d '"' -f 4)
-
-    curl -sL "${QEMU_USER_STATIC_DOWNLOAD_URL}/${QEMU_USER_STATIC_LATEST_TAG}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz" \
-        | tar xzv
-
-    sed \
-        -e "s/__DOCKER_ARCH__/${DOCKER_ARCH}/g" \
-        -e "s/__QEMU_ARCH__/${QEMU_ARCH}/g" \
-        "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
-
-        docker run --rm --privileged multiarch/qemu-user-static:register --reset
-fi
-
-docker build \
-    --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
-    --build-arg aria_version="${ARIA_VERSION}" \
-    --tag "${IMAGE_NAME}" \
-    "$@" \
-    .
