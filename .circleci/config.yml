@@ -97,16 +97,16 @@ jobs:
 workflows:
   version: 2
   aria2-latest:
-    filters:
-      branches:
-        only:
-          - master
     jobs:
       - docker-checkout
       - aria2-build-latest-amd64:
+          filers:
+            only: master
           requires:
             - docker-checkout
       - aria2-build-latest-arm32v7:
+          filers:
+            only: master
           requires:
             - docker-checkout
 
