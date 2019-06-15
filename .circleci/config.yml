@@ -101,12 +101,14 @@ workflows:
       - docker-checkout
       - aria2-build-latest-amd64:
           filters:
-            only: master
+            branches:
+              only: master
           requires:
             - docker-checkout
       - aria2-build-latest-arm32v7:
           filters:
-            only: master
+            branches:
+              only: master
           requires:
             - docker-checkout
 
