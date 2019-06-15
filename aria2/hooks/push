@@ -5,21 +5,19 @@ set -x
 docker push "${IMAGE_NAME}"
 
 case "${DOCKER_TAG}" in
-    'latest') docker push "${DOCKER_REPO}:1.34" ;;
-    'latest-arm32v6') docker push "${DOCKER_REPO}:1.34-arm32v6" ;;
-    'latest-arm32v7') docker push "${DOCKER_REPO}:1.34-arm32v7" ;;
-    'latest-arm64v8') docker push "${DOCKER_REPO}:1.34-arm64v7" ;;
-    'busybox') docker push "${DOCKER_REPO}:1.34-busybox" ;;
-    'busybox-arm32v6') docker push "${DOCKER_REPO}:1.34-busybox-arm32v6" ;;
-    'busybox-arm32v7') docker push "${DOCKER_REPO}:1.34-busybox-arm32v7" ;;
-    'busybox-arm64v8') docker push "${DOCKER_REPO}:1.34-busybox-arm64v7" ;;
+    'latest') docker push "${DOCKER_REPO}:busybox" && docker push "${DOCKER_REPO}:1.34" && docker push "${DOCKER_REPO}:1.34-busybox";;
+    'latest-arm32v6') docker push "${DOCKER_REPO}:busybox-arm32v6" && docker push "${DOCKER_REPO}:1.34-arm32v6" && docker push "${DOCKER_REPO}:1.34-busybox-arm32v6";;
+    'latest-arm32v7') docker push "${DOCKER_REPO}:busybox-arm32v7" && docker push "${DOCKER_REPO}:1.34-arm32v7" && docker push "${DOCKER_REPO}:1.34-busybox-arm32v7";;
+    'latest-arm64v8') docker push "${DOCKER_REPO}:busybox-arm64v8" && docker push "${DOCKER_REPO}:1.34-arm64v7" && docker push "${DOCKER_REPO}:1.34-busybox-arm64v7";;
+    'edge') docker push "${DOCKER_REPO}:edge-busybox" ;;
+    'edge-arm32v6') docker push "${DOCKER_REPO}:edge-busybox-arm32v6" ;;
+    'edge-arm32v7') docker push "${DOCKER_REPO}:edge-busybox-arm32v7" ;;
+    'edge-arm64v8') docker push "${DOCKER_REPO}:edge-busybox-arm64v7" ;;
 esac
 
 case "${DOCKER_TAG}" in
-    'latest'*) DOCKER_MANIFEST="${DOCKER_REPO}:latest ${DOCKER_REPO}:1.34" ;;
-    'busybox'*) DOCKER_MANIFEST="${DOCKER_REPO}:busybox ${DOCKER_REPO}:1.34-busybox" ;;
-    'edge-busybox'*) DOCKER_MANIFEST="${DOCKER_REPO}:edge-busybox" ;;
-    'edge'*) DOCKER_MANIFEST="${DOCKER_REPO}:edge" ;;
+    'latest'*) DOCKER_MANIFEST="${DOCKER_REPO}:latest ${DOCKER_REPO}:1.34 ${DOCKER_REPO}:busybox ${DOCKER_REPO}:1.34-busybox";;
+    'edge'*) DOCKER_MANIFEST="${DOCKER_REPO}:edge ${DOCKER_REPO}:edge-busybox";;
 esac
 
 for manifest in ${DOCKER_MANIFEST}; do
@@ -32,3 +30,4 @@ for manifest in ${DOCKER_MANIFEST}; do
     docker manifest push "${manifest}"
 
 done
+

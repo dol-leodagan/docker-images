@@ -28,11 +28,22 @@ prepare()
     fi
 }
 
-build()
+build_static()
 {
     docker build \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --build-arg aria_version="${ARIA_VERSION}" \
+        --target static \
+        "$@" \
+        .
+}
+
+build_embed()
+{
+    docker build \
+        --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
+        --build-arg aria_version="${ARIA_VERSION}" \
+        --target embedded \
         "$@" \
         .
 }
@@ -42,27 +53,60 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='amd64'
         prepare
-        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34"
-        build --target embedded --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:1.34-busybox"
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34"
+        build_embed --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:1.34-busybox"
+        ;;
+    'latest-arm32v6')
+        ARIA_VERSION='tags/release-1.34.0'
+        DOCKER_ARCH='arm32v6'
+        QEMU_ARCH='arm'
+        prepare
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v6"
+        build_embed --tag "${DOCKER_REPO}:busybox-arm32v6" --tag "${DOCKER_REPO}:1.34-busybox-arm32v6"
         ;;
     'latest-arm32v7')
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
         prepare
-        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v7"
-        build --target embedded --tag "${DOCKER_REPO}:busybox-arm32v7" --tag "${DOCKER_REPO}:1.34-busybox-arm32v7"
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v7"
+        build_embed --tag "${DOCKER_REPO}:busybox-arm32v7" --tag "${DOCKER_REPO}:1.34-busybox-arm32v7"
         ;;
-    'edge')
+     'latest-arm64v8')
+        ARIA_VERSION='tags/release-1.34.0'
+        DOCKER_ARCH='arm64v8'
+        QEMU_ARCH='arm'
+        prepare
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm64v8"
+        build_embed --tag "${DOCKER_REPO}:busybox-arm64v8" --tag "${DOCKER_REPO}:1.34-busybox-arm64v8"
+        ;;
+     'edge')
         ARIA_VERSION='master'
         prepare
-        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
-        build --target embedded --tag "${DOCKER_REPO}:edge-busybox"
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        build_embed --tag "${DOCKER_REPO}:edge-busybox"
+        ;;
+    'edge-arm32v6')
+        ARIA_VERSION='master'
+        prepare
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v6"
         ;;
     'edge-arm32v7')
         ARIA_VERSION='master'
         prepare
-        build --target static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
-        build --target embedded --tag "${DOCKER_REPO}:edge-busybox-arm32v7"
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v7"
+        ;;
+    'edge-arm64v8')
+        ARIA_VERSION='master'
+        prepare
+        build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        build_embed --tag "${DOCKER_REPO}:edge-busybox-arm64v8"
+        ;;
+    *)
+        echo "Unsupported Docker Tag : ${DOCKER_TAG}"
+        exit 1
         ;;
 esac
+

@@ -20,6 +20,11 @@ aria2-matrix:
   test-cmd: &aria2-test-command |
     cd aria2
     ./hooks/test
+  deploy-cmd: &aria2-deploy-command |
+    cd aria2
+    docker login -p "$DOCKER_HUB_USERNAME" -u "$DOCKER_HUB_PASSWORD"
+    ./hooks/push
+
 
   amd64:
     env: &aria2-env-amd64
@@ -36,6 +41,11 @@ aria2-matrix:
         command: *aria2-test-command
         environment:
           <<: *aria2-env-amd64
+    deploy: &aria2-deploy-amd64
+      run:
+        command: *aria2-deploy-command
+        environment:
+          <<: *aria2-env-amd64
 
   arm32v7:
     env: &aria2-env-arm32v7
@@ -50,6 +60,11 @@ aria2-matrix:
     test: &aria2-test-arm32v7
       run:
         command: *aria2-test-command
+        environment:
+          <<: *aria2-env-arm32v7
+    deploy: &aria2-deploy-arm32v7
+      run:
+        command: *aria2-deploy-command
         environment:
           <<: *aria2-env-arm32v7
 
@@ -69,6 +84,7 @@ jobs:
       - *aria2-attach-workspace
       - *aria2-build-amd64
       - *aria2-test-amd64
+      - *aria2-deploy-amd64
 
   aria2-build-latest-arm32v7:
     <<: *aria2-executor-defaults
@@ -76,10 +92,15 @@ jobs:
       - *aria2-attach-workspace
       - *aria2-build-arm32v7
       - *aria2-test-arm32v7
+      - *aria2-deploy-arm32v7
 
 workflows:
   version: 2
   aria2-latest:
+    filters:
+      branches:
+        only:
+          - master
     jobs:
       - docker-checkout
       - aria2-build-latest-amd64:

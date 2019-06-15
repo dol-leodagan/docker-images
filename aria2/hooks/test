@@ -2,24 +2,45 @@
 
 set -x
 
+run_test()
+{
+    docker run --rm "$@" "https://www.google.com"
+}
+
 case "${DOCKER_TAG}" in
     'latest')
-        docker run --rm "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
-        docker run --rm "${DOCKER_REPO}:busybox" "https://www.google.com"
+        run_test "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test "${DOCKER_REPO}:busybox"
+        ;;
+    'latest-arm32v6')
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm32v6"
         ;;
     'latest-arm32v7')
-        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
-        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm32v7" "https://www.google.com"
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm32v7"
+        ;;
+    'latest-arm64v8')
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm64v8"
         ;;
     'edge')
-        docker run --rm "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
-        docker run --rm "${DOCKER_REPO}:edge-busybox" "https://www.google.com"
+        run_test "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test "${DOCKER_REPO}:edge-busybox"
+        ;;
+    'edge-arm32v6')
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        tun_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm32v6"
         ;;
     'edge-arm32v7')
-        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
-        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm32v7" "https://www.google.com"
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        tun_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm32v7"
         ;;
-    *)
+     'edge-arm64v8')
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        tun_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm64v8"
+        ;;
+     *)
         echo "No tests to run for DOCKER_TAG:${DOCKER_TAG}"
         exit 1
         ;;
