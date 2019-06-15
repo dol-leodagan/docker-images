@@ -17,13 +17,8 @@ aria2-matrix:
   build-cmd: &aria2-build-command |
     cd aria2
     ./hooks/build
-    docker save -o "aria2-${DOCKER_TAG}.tar" "${DOCKER_REPO}:${DOCKER_TAG}"
-    docker save -o "aria2-${EMBED_TAG}.tar" "${DOCKER_REPO}:${EMBED_TAG}"
   test-cmd: &aria2-test-command |
     cd aria2
-    docker load < "aria2-${DOCKER_TAG}.tar"
-    docker load < "aria2-${EMBED_TAG}.tar"
-    docker run --rm --privileged multiarch/qemu-user-static:register --reset
     ./hooks/test
 
   amd64:
@@ -73,12 +68,6 @@ jobs:
     steps:
       - *aria2-attach-workspace
       - *aria2-build-amd64
-      - *aria2-persist-workspace
-
-  aria2-test-latest-amd64:
-    <<: *aria2-executor-defaults
-    steps:
-      - *aria2-attach-workspace
       - *aria2-test-amd64
 
   aria2-build-latest-arm32v7:
@@ -86,12 +75,6 @@ jobs:
     steps:
       - *aria2-attach-workspace
       - *aria2-build-arm32v7
-      - *aria2-persist-workspace
-
-  aria2-test-latest-arm32v7:
-    <<: *aria2-executor-defaults
-    steps:
-      - *aria2-attach-workspace
       - *aria2-test-arm32v7
 
 workflows:
@@ -102,13 +85,7 @@ workflows:
       - aria2-build-latest-amd64:
           requires:
             - docker-checkout
-      - aria2-test-latest-amd64:
-          requires:
-            - aria2-build-latest-amd64
       - aria2-build-latest-arm32v7:
           requires:
             - docker-checkout
-      - aria2-test-latest-arm32v7:
-          requires:
-            - aria2-build-latest-arm32v7
 

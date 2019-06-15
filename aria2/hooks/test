@@ -8,16 +8,16 @@ case "${DOCKER_TAG}" in
         docker run --rm "${DOCKER_REPO}:busybox" "https://www.google.com"
         ;;
     'latest-arm32v7')
-        docker run --rm -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
-        docker run --rm -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm32v7" "https://www.google.com"
+        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
+        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm32v7" "https://www.google.com"
         ;;
     'edge')
         docker run --rm "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
         docker run --rm "${DOCKER_REPO}:edge-busybox" "https://www.google.com"
         ;;
     'edge-arm32v7')
-        docker run --rm -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
-        docker run --rm -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm32v7" "https://www.google.com"
+        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" && \
+        docker run --rm --privileged -v qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm32v7" "https://www.google.com"
         ;;
     *)
         echo "No tests to run for DOCKER_TAG:${DOCKER_TAG}"
