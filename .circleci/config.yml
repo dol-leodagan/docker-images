@@ -22,7 +22,7 @@ aria2-matrix:
     ./hooks/test
   deploy-cmd: &aria2-deploy-command |
     cd aria2
-    docker login -p "$DOCKER_HUB_USERNAME" -u "$DOCKER_HUB_PASSWORD"
+    echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
     ./hooks/push
 
 
