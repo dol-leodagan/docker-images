@@ -21,8 +21,8 @@ case "${DOCKER_TAG}" in
         run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm32v7"
         ;;
     'latest-arm64v8')
-        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
-        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:busybox-arm64v8"
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:busybox-arm64v8"
         ;;
     'edge')
         run_test "${DOCKER_REPO}:${DOCKER_TAG}" && \
@@ -37,8 +37,8 @@ case "${DOCKER_TAG}" in
         tun_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm32v7"
         ;;
      'edge-arm64v8')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
-        tun_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:edge-busybox-arm64v8"
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        tun_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:edge-busybox-arm64v8"
         ;;
      *)
         echo "No tests to run for DOCKER_TAG:${DOCKER_TAG}"

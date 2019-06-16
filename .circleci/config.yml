@@ -46,6 +46,25 @@ aria2-matrix:
         command: *aria2-deploy-command
         environment:
           <<: *aria2-env-amd64
+    env-edge: &aria2-env-edge-amd64
+      <<: *aria2-env
+      DOCKER_TAG: edge
+      EMBED_TAG: edge-busybox
+    build-edge: &aria2-build-edge-amd64
+      run:
+        command: *aria2-build-command
+        environment:
+          <<: *aria2-env-edge-amd64
+    test-edge: &aria2-test-edge-amd64
+      run:
+        command: *aria2-test-command
+        environment:
+          <<: *aria2-env-edge-amd64
+    deploy-edge: &aria2-deploy-edge-amd64
+      run:
+        command: *aria2-deploy-command
+        environment:
+          <<: *aria2-env-edge-amd64
 
   arm32v6:
     env: &aria2-env-arm32v6
@@ -67,6 +86,25 @@ aria2-matrix:
         command: *aria2-deploy-command
         environment:
           <<: *aria2-env-arm32v6
+    env-edge: &aria2-env-edge-arm32v6
+      <<: *aria2-env
+      DOCKER_TAG: edge-arm32v6
+      EMBED_TAG: edge-busybox-arm32v6
+    build-edge: &aria2-build-edge-arm32v6
+      run:
+        command: *aria2-build-command
+        environment:
+          <<: *aria2-env-edge-arm32v6
+    test-edge: &aria2-test-edge-arm32v6
+      run:
+        command: *aria2-test-command
+        environment:
+          <<: *aria2-env-edge-arm32v6
+    deploy-edge: &aria2-deploy-edge-arm32v6
+      run:
+        command: *aria2-deploy-command
+        environment:
+          <<: *aria2-env-edge-arm32v6
 
   arm32v7:
     env: &aria2-env-arm32v7
@@ -88,6 +126,25 @@ aria2-matrix:
         command: *aria2-deploy-command
         environment:
           <<: *aria2-env-arm32v7
+    env-edge: &aria2-env-edge-arm32v7
+      <<: *aria2-env
+      DOCKER_TAG: edge-arm32v7
+      EMBED_TAG: edge-busybox-arm32v7
+    build-edge: &aria2-build-edge-arm32v7
+      run:
+        command: *aria2-build-command
+        environment:
+          <<: *aria2-env-edge-arm32v7
+    test-edge: &aria2-test-edge-arm32v7
+      run:
+        command: *aria2-test-command
+        environment:
+          <<: *aria2-env-edge-arm32v7
+    deploy-edge: &aria2-deploy-edge-arm32v7
+      run:
+        command: *aria2-deploy-command
+        environment:
+          <<: *aria2-env-edge-arm32v7
 
   arm64v8:
     env: &aria2-env-arm64v8
@@ -109,6 +166,25 @@ aria2-matrix:
         command: *aria2-deploy-command
         environment:
           <<: *aria2-env-arm64v8
+    env-edge: &aria2-env-edge-arm64v8
+      <<: *aria2-env
+      DOCKER_TAG: edge-arm64v8
+      EMBED_TAG: edge-busybox-arm64v8
+    build-edge: &aria2-build-edge-arm64v8
+      run:
+        command: *aria2-build-command
+        environment:
+          <<: *aria2-env-edge-arm64v8
+    test-edge: &aria2-test-edge-arm64v8
+      run:
+        command: *aria2-test-command
+        environment:
+          <<: *aria2-env-edge-arm64v8
+    deploy-edge: &aria2-deploy-edge-arm64v8
+      run:
+        command: *aria2-deploy-command
+        environment:
+          <<: *aria2-env-edge-arm64v8
 
 version: 2
 
@@ -152,6 +228,38 @@ jobs:
       - *aria2-test-arm64v8
       - *aria2-deploy-arm64v8
 
+  aria2-build-edge-amd64:
+    <<: *aria2-executor-defaults
+    steps:
+      - *aria2-attach-workspace
+      - *aria2-build-edge-amd64
+      - *aria2-test-edge-amd64
+      - *aria2-deploy-edge-amd64
+
+  aria2-build-edge-arm32v6:
+    <<: *aria2-executor-defaults
+    steps:
+      - *aria2-attach-workspace
+      - *aria2-build-edge-arm32v6
+      - *aria2-test-edge-arm32v6
+      - *aria2-deploy-edge-arm32v6
+
+  aria2-build-edge-arm32v7:
+    <<: *aria2-executor-defaults
+    steps:
+      - *aria2-attach-workspace
+      - *aria2-build-edge-arm32v7
+      - *aria2-test-edge-arm32v7
+      - *aria2-deploy-edge-arm32v7
+
+  aria2-build-edge-arm64v8:
+    <<: *aria2-executor-defaults
+    steps:
+      - *aria2-attach-workspace
+      - *aria2-build-edge-arm64v8
+      - *aria2-test-edge-arm64v8
+      - *aria2-deploy-edge-arm64v8
+
 workflows:
   version: 2
   aria2-latest:
@@ -176,6 +284,30 @@ workflows:
           requires:
             - docker-checkout
       - aria2-build-latest-arm64v8:
+          filters:
+            branches:
+              only: master
+          requires:
+            - docker-checkout
+      - aria2-build-edge-amd64:
+          filters:
+            branches:
+              only: master
+          requires:
+            - docker-checkout
+      - aria2-build-edge-arm32v6:
+          filters:
+            branches:
+              only: master
+          requires:
+            - docker-checkout
+      - aria2-build-edge-arm32v7:
+          filters:
+            branches:
+              only: master
+          requires:
+            - docker-checkout
+      - aria2-build-edge-arm64v8:
           filters:
             branches:
               only: master

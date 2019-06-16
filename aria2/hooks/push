@@ -8,7 +8,7 @@ case "${DOCKER_TAG}" in
     'latest') docker push "${DOCKER_REPO}:busybox" && docker push "${DOCKER_REPO}:1.34" && docker push "${DOCKER_REPO}:1.34-busybox";;
     'latest-arm32v6') docker push "${DOCKER_REPO}:busybox-arm32v6" && docker push "${DOCKER_REPO}:1.34-arm32v6" && docker push "${DOCKER_REPO}:1.34-busybox-arm32v6";;
     'latest-arm32v7') docker push "${DOCKER_REPO}:busybox-arm32v7" && docker push "${DOCKER_REPO}:1.34-arm32v7" && docker push "${DOCKER_REPO}:1.34-busybox-arm32v7";;
-    'latest-arm64v8') docker push "${DOCKER_REPO}:busybox-arm64v8" && docker push "${DOCKER_REPO}:1.34-arm64v7" && docker push "${DOCKER_REPO}:1.34-busybox-arm64v7";;
+    'latest-arm64v8') docker push "${DOCKER_REPO}:busybox-arm64v8" && docker push "${DOCKER_REPO}:1.34-arm64v8" && docker push "${DOCKER_REPO}:1.34-busybox-arm64v8";;
     'edge') docker push "${DOCKER_REPO}:edge-busybox" ;;
     'edge-arm32v6') docker push "${DOCKER_REPO}:edge-busybox-arm32v6" ;;
     'edge-arm32v7') docker push "${DOCKER_REPO}:edge-busybox-arm32v7" ;;

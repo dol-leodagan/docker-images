@@ -75,31 +75,38 @@ case "${DOCKER_TAG}" in
      'latest-arm64v8')
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='arm64v8'
-        QEMU_ARCH='arm'
+        QEMU_ARCH='aarch64'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm64v8"
         build_embed --tag "${DOCKER_REPO}:busybox-arm64v8" --tag "${DOCKER_REPO}:1.34-busybox-arm64v8"
         ;;
      'edge')
         ARIA_VERSION='master'
+        DOCKER_ARCH='amd64'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox"
         ;;
     'edge-arm32v6')
         ARIA_VERSION='master'
+        DOCKER_ARCH='arm32v6'
+        QEMU_ARCH='arm'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v6"
         ;;
     'edge-arm32v7')
         ARIA_VERSION='master'
+        DOCKER_ARCH='arm32v7'
+        QEMU_ARCH='arm'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v7"
         ;;
     'edge-arm64v8')
         ARIA_VERSION='master'
+        DOCKER_ARCH='arm64v8'
+        QEMU_ARCH='aarch64'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm64v8"
