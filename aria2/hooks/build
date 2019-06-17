@@ -33,6 +33,9 @@ build_static()
     docker build \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --build-arg aria_version="${ARIA_VERSION}" \
+        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+        --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
+        --build-arg BUILD_VERSION="${LABEL_VERSION}" \
         --target static \
         "$@" \
         .
@@ -43,6 +46,9 @@ build_embed()
     docker build \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --build-arg aria_version="${ARIA_VERSION}" \
+        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+        --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
+        --build-arg BUILD_VERSION="${LABEL_VERSION}" \
         --target embedded \
         "$@" \
         .
@@ -52,6 +58,7 @@ case "${DOCKER_TAG}" in
     'latest')
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='amd64'
+        LABEL_VERSION='1.34-rc1'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34"
         build_embed --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:1.34-busybox"
@@ -60,6 +67,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='arm32v6'
         QEMU_ARCH='arm'
+        LABEL_VERSION='1.34-rc1'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v6"
         build_embed --tag "${DOCKER_REPO}:busybox-arm32v6" --tag "${DOCKER_REPO}:1.34-busybox-arm32v6"
@@ -68,6 +76,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
+        LABEL_VERSION='1.34-rc1'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v7"
         build_embed --tag "${DOCKER_REPO}:busybox-arm32v7" --tag "${DOCKER_REPO}:1.34-busybox-arm32v7"
@@ -76,6 +85,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='tags/release-1.34.0'
         DOCKER_ARCH='arm64v8'
         QEMU_ARCH='aarch64'
+        LABEL_VERSION='1.34-rc1'
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm64v8"
         build_embed --tag "${DOCKER_REPO}:busybox-arm64v8" --tag "${DOCKER_REPO}:1.34-busybox-arm64v8"
@@ -83,7 +93,7 @@ case "${DOCKER_TAG}" in
      'edge')
         ARIA_VERSION='master'
         DOCKER_ARCH='amd64'
-        prepare
+        LABEL_VERSION="$(git ls-remote https://github.com/aria2/aria2 "${ARIA_VERSION}" | head -1 | cut -f1)-rc1"
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox"
         ;;
@@ -91,6 +101,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='master'
         DOCKER_ARCH='arm32v6'
         QEMU_ARCH='arm'
+        LABEL_VERSION="$(git ls-remote https://github.com/aria2/aria2 "${ARIA_VERSION}" | head -1 | cut -f1)-rc1"
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v6"
@@ -99,7 +110,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='master'
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
-        prepare
+        LABEL_VERSION="$(git ls-remote https://github.com/aria2/aria2 "${ARIA_VERSION}" | head -1 | cut -f1)-rc1"
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v7"
         ;;
@@ -107,6 +118,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='master'
         DOCKER_ARCH='arm64v8'
         QEMU_ARCH='aarch64'
+        LABEL_VERSION="$(git ls-remote https://github.com/aria2/aria2 "${ARIA_VERSION}" | head -1 | cut -f1)-rc1"
         prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm64v8"

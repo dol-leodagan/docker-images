@@ -1,3 +1,7 @@
+ARG BUILD_DATE=now
+ARG VCS_REF=local
+ARG BUILD_VERSION=dev
+
 FROM __DOCKER_ARCH__/alpine:latest as builder
 
 ARG aria_version
@@ -41,19 +45,42 @@ RUN apk add --no-cache \
 
 FROM scratch as static
 
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.version=$BUILD_VERSION \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/dol-leodagan/docker-images.git" \
+      org.label-schema.name="aria2" \
+      org.label-schema.description="Utility for downloading files and torrents" \
+      org.label-schema.usage="https://github.com/dol-leodagan/docker-images/blob/master/aria2/README.md" \
+      org.label-schema.schema-version="1.0.0-rc1" \
+      maintainer="Leodagan <leodagan@freyad.net>"
+
 COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 EXPOSE 6800
+
+WORKDIR /
 
 ENTRYPOINT ["aria2c"]
 
 FROM __DOCKER_ARCH__/busybox:musl as embedded
 
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.version=${BUILD_VERSION}-busybox \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.name="aria2-busybox" \
+      org.label-schema.description="Utility for downloading files and torrents with embedded Busybox" \
+      org.label-schema.usage="https://github.com/dol-leodagan/docker-images/blob/master/aria2/README.md" \
+      org.label-schema.schema-version="1.0.0-rc1" \
+      maintainer="Leodagan <leodagan@freyad.net>"
+
 COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 EXPOSE 6800
+
+WORKDIR /
 
 ENTRYPOINT ["aria2c"]
 
