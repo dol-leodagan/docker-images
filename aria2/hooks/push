@@ -12,7 +12,7 @@ case "${DOCKER_TAG}" in
     'edge') docker push "${DOCKER_REPO}:edge-busybox" ;;
     'edge-arm32v6') docker push "${DOCKER_REPO}:edge-busybox-arm32v6" ;;
     'edge-arm32v7') docker push "${DOCKER_REPO}:edge-busybox-arm32v7" ;;
-    'edge-arm64v8') docker push "${DOCKER_REPO}:edge-busybox-arm64v7" ;;
+    'edge-arm64v8') docker push "${DOCKER_REPO}:edge-busybox-arm64v8" ;;
     *) echo "Unknown Docker Tag: ${DOCKER_TAG}" && exit 1;;
 esac
 
