@@ -94,6 +94,7 @@ case "${DOCKER_TAG}" in
         ARIA_VERSION='master'
         DOCKER_ARCH='amd64'
         LABEL_VERSION="$(git ls-remote https://github.com/aria2/aria2 "${ARIA_VERSION}" | head -1 | cut -f1)-rc1"
+        prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox"
         ;;
@@ -111,6 +112,7 @@ case "${DOCKER_TAG}" in
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
         LABEL_VERSION="$(git ls-remote https://github.com/aria2/aria2 "${ARIA_VERSION}" | head -1 | cut -f1)-rc1"
+        prepare
         build_static --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         build_embed --tag "${DOCKER_REPO}:edge-busybox-arm32v7"
         ;;
