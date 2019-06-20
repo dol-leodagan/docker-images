@@ -14,6 +14,11 @@ aria2-matrix:
       paths:
         - docker
 
+  skip-cmd: &aria2-skip-command |
+    if [ "$(git --no-pager log -1 --format=format:%H --full-diff aria2/)" != "${CIRCLE_SHA1}"  ]; then
+      echo "No changes in Aria2 repository, skipping step..."
+      circleci-agent step halt
+    fi
   build-cmd: &aria2-build-command |
     cd aria2
     ./hooks/build
@@ -200,6 +205,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-amd64
       - *aria2-test-amd64
       - *aria2-deploy-amd64
@@ -208,6 +214,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-arm32v6
       - *aria2-test-arm32v6
       - *aria2-deploy-arm32v6
@@ -216,6 +223,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-arm32v7
       - *aria2-test-arm32v7
       - *aria2-deploy-arm32v7
@@ -224,6 +232,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-arm64v8
       - *aria2-test-arm64v8
       - *aria2-deploy-arm64v8
@@ -232,6 +241,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-edge-amd64
       - *aria2-test-edge-amd64
       - *aria2-deploy-edge-amd64
@@ -240,6 +250,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-edge-arm32v6
       - *aria2-test-edge-arm32v6
       - *aria2-deploy-edge-arm32v6
@@ -248,6 +259,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-edge-arm32v7
       - *aria2-test-edge-arm32v7
       - *aria2-deploy-edge-arm32v7
@@ -256,6 +268,7 @@ jobs:
     <<: *aria2-executor-defaults
     steps:
       - *aria2-attach-workspace
+      - run: *aria2-skip-command
       - *aria2-build-edge-arm64v8
       - *aria2-test-edge-arm64v8
       - *aria2-deploy-edge-arm64v8
