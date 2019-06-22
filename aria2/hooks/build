@@ -2,7 +2,7 @@
 
 set -x
 
-source "$(dirname "$0")/versions"
+. "$(dirname "$0")/versions"
 
 prepare()
 {
@@ -35,7 +35,7 @@ build_static()
     docker build \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --build-arg aria_version="${ARIA_VERSION}" \
-        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
         --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
         --build-arg BUILD_VERSION="${LABEL_VERSION}" \
         --target static \
@@ -48,7 +48,7 @@ build_embed()
     docker build \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --build-arg aria_version="${ARIA_VERSION}" \
-        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
         --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
         --build-arg BUILD_VERSION="${LABEL_VERSION}" \
         --target embedded \

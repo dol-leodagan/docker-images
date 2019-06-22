@@ -2,7 +2,7 @@
 
 set -x
 
-source "$(dirname "$0")/versions"
+. "$(dirname "$0")/versions"
 
 docker push "${DOCKER_REPO}:${DOCKER_TAG}"
 

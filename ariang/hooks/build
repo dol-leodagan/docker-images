@@ -2,7 +2,7 @@
 
 set -x
 
-source "$(dirname "$0")/versions"
+. "$(dirname "$0")/versions"
 
 prepare()
 {
@@ -35,7 +35,7 @@ build_final()
     docker build \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --build-arg ariang_version="${ARIANG_VERSION}" \
-        --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
         --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
         --build-arg BUILD_VERSION="${LABEL_VERSION}" \
         --target final \
