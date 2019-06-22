@@ -36,7 +36,6 @@ docker-images-matrix:
       requires:
         - docker-checkout
 
-
 ariang-matrix:
   environment: &ariang-env
     PROJECT_PATH: ariang
@@ -50,11 +49,10 @@ ariang-matrix:
         DOCKER_TAG: latest
   workflows: &ariang-workflows-matrix
     ariang:
-      - docker-checkout
-      - ariang-build-latest-amd64:
-          <<: *images-master-workflow
-  
-    
+      jobs:
+        - docker-checkout
+        - ariang-build-latest-amd64:
+            <<: *images-master-workflow
 
 aria2-matrix:
   executor: &aria2-executor-defaults
