@@ -149,7 +149,7 @@ aria2-matrix:
       environment:
         <<: *aria2-env
         DOCKER_TAG: edge-arm64v8
-  workflows: &ariang-workflows-matrix
+  workflows: &aria2-workflows-matrix
     aria2:
       jobs:
         - docker-checkout
