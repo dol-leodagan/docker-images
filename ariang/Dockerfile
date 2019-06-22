@@ -19,19 +19,10 @@ RUN set -ex; \
     npm install natives@1.1.6; \
     gulp clean build
 
-FROM __DOCKER_ARCH__/nginx:alpine as final
 
-LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.version=$BUILD_VERSION \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/dol-leodagan/docker-images.git" \
-      org.label-schema.name="ariang" \
-      org.label-schema.description="Modern web frontend making aria2 easier to use" \
-      org.label-schema.usage="https://github.com/dol-leodagan/docker-images/blob/master/ariang/README.md" \
-      org.label-schema.schema-version="1.0.0-rc1" \
-      maintainer="Leodagan <leodagan@freyad.net>"
+FROM __DOCKER_ARCH__/nginx:alpine as middle
 
-COPY --from=builder /AriaNg/dist /usr/share/nginx/html
+COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
 RUN set -ex; \
     mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.template; \
@@ -46,6 +37,22 @@ RUN set -ex; \
         root \/usr\/share\/nginx\/html;\
         index index.html index.htm;\
     }' /etc/nginx/conf.d/default.conf.template
+
+
+FROM __DOCKER_ARCH__/nginx:alpine as final
+
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.version=$BUILD_VERSION \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/dol-leodagan/docker-images.git" \
+      org.label-schema.name="ariang" \
+      org.label-schema.description="Modern web frontend making aria2 easier to use" \
+      org.label-schema.usage="https://github.com/dol-leodagan/docker-images/blob/master/ariang/README.md" \
+      org.label-schema.schema-version="1.0.0-rc1" \
+      maintainer="Leodagan <leodagan@freyad.net>"
+
+COPY --from=builder /AriaNg/dist /usr/share/nginx/html
+COPY --from=middle /etc/nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
 
 CMD [ "sh", "-c", "sed -e 's#__ARIANG_JSONRPC_STRING__#'\"${ARIANG_JSONRPC_STRING}\"'#' /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'" ]
 
