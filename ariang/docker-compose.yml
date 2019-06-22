@@ -2,5 +2,7 @@ version: '2'
 services:
   ariang:
     image: leodagan/ariang:latest
+    environment:
+      ARIANG_JSONRPC_STRING: /settings/rpc/set/ws/127.0.0.1/6800/jsonrpc
     ports:
       - "8080:80"

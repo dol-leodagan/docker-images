@@ -47,11 +47,61 @@ ariang-matrix:
       environment:
         <<: *ariang-env
         DOCKER_TAG: latest
+    ariang-build-latest-arm32v6:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: latest-arm32v6
+    ariang-build-latest-arm32v7:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: latest-arm32v7
+    ariang-build-latest-arm64v8:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: latest-arm64v8
+    ariang-build-edge-amd64:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: edge
+    ariang-build-edge-arm32v6:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: edge-arm32v6
+    ariang-build-edge-arm32v7:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: edge-arm32v7
+    ariang-build-edge-arm64v8:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: edge-arm64v8
+
   workflows: &ariang-workflows-matrix
     ariang:
       jobs:
         - docker-checkout
         - ariang-build-latest-amd64:
+            <<: *images-master-workflow
+        - ariang-build-latest-arm32v6:
+            <<: *images-master-workflow
+        - ariang-build-latest-arm32v7:
+            <<: *images-master-workflow
+        - ariang-build-latest-arm64v8:
+            <<: *images-master-workflow
+        - ariang-build-edge-amd64:
+            <<: *images-master-workflow
+        - ariang-build-edge-arm32v6:
+            <<: *images-master-workflow
+        - ariang-build-edge-arm32v7:
+            <<: *images-master-workflow
+        - ariang-build-edge-arm64v8:
             <<: *images-master-workflow
 
 aria2-matrix:
