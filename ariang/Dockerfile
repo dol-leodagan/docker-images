@@ -49,5 +49,5 @@ RUN set -ex; \
         index index.html index.htm;\
     }' /etc/nginx/conf.d/default.conf.template
 
-CMD [ "sh", "-c", "sed -e 's#__ARIANG_JSONRPC_STRING__#'\"${ARIANG_JSONRPC_STRING}\"'#' /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g daemon off;" ]
+CMD [ "sh", "-c", "sed -e 's#__ARIANG_JSONRPC_STRING__#'\"${ARIANG_JSONRPC_STRING}\"'#' /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'" ]
 
