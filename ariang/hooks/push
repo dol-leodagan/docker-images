@@ -2,13 +2,15 @@
 
 set -x
 
+source "$(dirname "$0")/versions"
+
 docker push "${DOCKER_REPO}:${DOCKER_TAG}"
 
 case "${DOCKER_TAG}" in
-    'latest') docker push "${DOCKER_REPO}:1.1.1";;
-    'latest-arm32v6') docker push "${DOCKER_REPO}:1.1.1-arm32v6";;
-    'latest-arm32v7') docker push "${DOCKER_REPO}:1.1.1-arm32v7";;
-    'latest-arm64v8') docker push "${DOCKER_REPO}:1.1.1-arm64v8";;
+    'latest') docker push "${DOCKER_REPO}:${ARIANG_REF_VERSION}";;
+    'latest-arm32v6') docker push "${DOCKER_REPO}:${ARIANG_REF_VERSION}-arm32v6";;
+    'latest-arm32v7') docker push "${DOCKER_REPO}:${ARIANG_REF_VERSION}-arm32v7";;
+    'latest-arm64v8') docker push "${DOCKER_REPO}:${ARIANG_REF_VERSION}-arm64v8";;
     'edge') ;;
     'edge-arm32v6') ;;
     'edge-arm32v7') ;;

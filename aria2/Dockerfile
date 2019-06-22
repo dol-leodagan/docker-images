@@ -41,7 +41,8 @@ RUN apk add --no-cache \
                 --without-libxml2 \
                 --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' && \
     make -j"${make_jobs}" && \
-    make install
+    make install && \
+    mkdir /download
 
 FROM scratch as static
 
@@ -57,10 +58,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /download /download
 
 EXPOSE 6800
 
-WORKDIR /
+WORKDIR /download
 
 ENTRYPOINT ["aria2c"]
 
@@ -77,10 +79,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /download /download
 
 EXPOSE 6800
 
-WORKDIR /
+WORKDIR /download
 
 ENTRYPOINT ["aria2c"]
 

@@ -2,6 +2,8 @@
 
 set -x
 
+source "$(dirname "$0")/versions"
+
 prepare()
 {
     if [ "${DOCKER_ARCH}x" = "x" ] || [ "${DOCKER_ARCH}" = "amd64" ]; then
@@ -43,41 +45,41 @@ build_final()
 
 case "${DOCKER_TAG}" in
     'latest')
-        ARIANG_VERSION='tags/1.1.1'
+        ARIANG_VERSION="tags/${ARIANG_REF_VERSION}"
         DOCKER_ARCH='amd64'
-        LABEL_VERSION='1.1.1-rc1'
+        LABEL_VERSION="${ARIANG_REF_VERSION}-rc${ARIANG_IMAGE_VERSION}"
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${ARIANG_REF_VERSION}"
         ;;
     'latest-arm32v6')
-        ARIANG_VERSION='tags/1.1.1'
+        ARIANG_VERSION="tags/${ARIANG_REF_VERSION}"
         DOCKER_ARCH='arm32v6'
         QEMU_ARCH='arm'
-        LABEL_VERSION='1.1.1-rc1'
+        LABEL_VERSION="${ARIANG_REF_VERSION}-rc${ARIANG_IMAGE_VERSION}"
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm32v6"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${ARIANG_REF_VERSION}-arm32v6"
         ;;
     'latest-arm32v7')
-        ARIANG_VERSION='tags/1.1.1'
+        ARIANG_VERSION="tags/${ARIANG_REF_VERSION}"
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
-        LABEL_VERSION='1.1.1-rc1'
+        LABEL_VERSION="${ARIANG_REF_VERSION}-rc${ARIANG_IMAGE_VERSION}"
         prepare
         sed -i -e "s/arm32v7\/nginx:alpine/arm32v7\/nginx:latest/g" "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm32v7"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${ARIANG_REF_VERSION}-arm32v7"
         ;;
      'latest-arm64v8')
-        ARIANG_VERSION='tags/1.1.1'
+        ARIANG_VERSION="tags/${ARIANG_REF_VERSION}"
         DOCKER_ARCH='arm64v8'
         QEMU_ARCH='aarch64'
-        LABEL_VERSION='1.1.1-rc1'
+        LABEL_VERSION="${ARIANG_REF_VERSION}-rc${ARIANG_IMAGE_VERSION}"
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm64v8"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${ARIANG_REF_VERSION}-arm64v8"
         ;;
      'edge')
         ARIANG_VERSION='master'
         DOCKER_ARCH='amd64'
-        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc1"
+        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc${ARIANG_IMAGE_VERSION}"
         prepare
         build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
@@ -85,7 +87,7 @@ case "${DOCKER_TAG}" in
         ARIANG_VERSION='master'
         DOCKER_ARCH='arm32v6'
         QEMU_ARCH='arm'
-        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc1"
+        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc${ARIANG_IMAGE_VERSION}"
         prepare
         build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
@@ -93,7 +95,7 @@ case "${DOCKER_TAG}" in
         ARIANG_VERSION='master'
         DOCKER_ARCH='arm32v7'
         QEMU_ARCH='arm'
-        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc1"
+        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc${ARIANG_IMAGE_VERSION}"
         prepare
         sed -i -e "s/arm32v7\/nginx:alpine/arm32v7\/nginx:latest/g" "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
         build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
@@ -102,7 +104,7 @@ case "${DOCKER_TAG}" in
         ARIANG_VERSION='master'
         DOCKER_ARCH='arm64v8'
         QEMU_ARCH='aarch64'
-        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc1"
+        LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc${ARIANG_IMAGE_VERSION}"
         prepare
         build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
