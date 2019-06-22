@@ -33,8 +33,8 @@ docker-images-matrix:
     filters:
       branches:
         only: master
-      requires:
-        - docker-checkout
+    requires:
+      - docker-checkout
 
 ariang-matrix:
   environment: &ariang-env
