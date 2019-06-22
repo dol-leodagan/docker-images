@@ -12,7 +12,7 @@ RUN apk add --no-cache \
       nodejs \
       npm \
       git && \
-    npm install gulp -g
+    npm install gulp -g && \
     git clone "https://github.com/mayswind/AriaNg.git" && \
     cd /AriaNg && \
     git checkout "${ariang_version}" && \
