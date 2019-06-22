@@ -47,7 +47,7 @@ case "${DOCKER_TAG}" in
         DOCKER_ARCH='amd64'
         LABEL_VERSION='1.1.1-rc1'
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1"
         ;;
     'latest-arm32v6')
         ARIANG_VERSION='tags/1.1.1'
@@ -55,7 +55,7 @@ case "${DOCKER_TAG}" in
         QEMU_ARCH='arm'
         LABEL_VERSION='1.1.1-rc1'
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v6"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm32v6"
         ;;
     'latest-arm32v7')
         ARIANG_VERSION='tags/1.1.1'
@@ -63,7 +63,7 @@ case "${DOCKER_TAG}" in
         QEMU_ARCH='arm'
         LABEL_VERSION='1.1.1-rc1'
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm32v7"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm32v7"
         ;;
      'latest-arm64v8')
         ARIANG_VERSION='tags/1.1.1'
@@ -71,7 +71,7 @@ case "${DOCKER_TAG}" in
         QEMU_ARCH='aarch64'
         LABEL_VERSION='1.1.1-rc1'
         prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.34-arm64v8"
+        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm64v8"
         ;;
      'edge')
         ARIANG_VERSION='master'

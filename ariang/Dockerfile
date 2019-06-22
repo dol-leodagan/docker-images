@@ -14,11 +14,11 @@ RUN set -ex; \
       npm \
       git; \
     npm install -g gulp; \
-    npm install natives@1.1.6; \
     git clone "https://github.com/mayswind/AriaNg.git"; \
     cd /AriaNg; \
     git checkout "${ariang_version}"; \
     npm install; \
+    npm install natives@1.1.6; \
     gulp clean build
 
 FROM __DOCKER_ARCH__/nginx:alpine as final
