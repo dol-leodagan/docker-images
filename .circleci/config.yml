@@ -29,6 +29,12 @@ docker-images-matrix:
           cd "${PROJECT_PATH}"
           echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
           ./hooks/push
+  master-workflow: &images-master-workflow
+    filters:
+      branches:
+        only: master
+      requires:
+        - docker-checkout
 
 
 ariang-matrix:
@@ -42,6 +48,12 @@ ariang-matrix:
       environment:
         <<: *ariang-env
         DOCKER_TAG: latest
+  workflows: &ariang-workflows-matrix
+    ariang:
+      - docker-checkout
+      - ariang-build-latest-amd64:
+          <<: *images-master-workflow
+  
     
 
 aria2-matrix:
@@ -323,6 +335,7 @@ jobs:
 
 workflows:
   version: 2
+  <<: *ariang-workflows-matrix
   aria2-latest:
     jobs:
       - docker-checkout
