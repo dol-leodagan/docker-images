@@ -8,15 +8,17 @@ ARG ariang_version
 
 COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
-RUN apk add --no-cache \
+RUN set -ex; \
+   apk add --no-cache \
       nodejs \
       npm \
-      git && \
-    npm install gulp -g && \
-    git clone "https://github.com/mayswind/AriaNg.git" && \
-    cd /AriaNg && \
-    git checkout "${ariang_version}" && \
-    npm install && \
+      git; \
+    npm install -g gulp; \
+    npm install natives@1.1.6; \
+    git clone "https://github.com/mayswind/AriaNg.git"; \
+    cd /AriaNg; \
+    git checkout "${ariang_version}"; \
+    npm install; \
     gulp clean build
 
 FROM __DOCKER_ARCH__/nginx:alpine as final
