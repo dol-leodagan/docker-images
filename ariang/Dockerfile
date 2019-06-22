@@ -2,11 +2,9 @@ ARG BUILD_DATE=now
 ARG VCS_REF=local
 ARG BUILD_VERSION=dev
 
-FROM __DOCKER_ARCH__/alpine:latest as builder
+FROM alpine:latest as builder
 
 ARG ariang_version
-
-COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
 RUN set -ex; \
    apk add --no-cache \
