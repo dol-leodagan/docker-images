@@ -63,6 +63,7 @@ case "${DOCKER_TAG}" in
         QEMU_ARCH='arm'
         LABEL_VERSION='1.1.1-rc1'
         prepare
+        sed -i -e "s/arm32v7\/nginx:alpine/arm32v7\/nginx:latest/g" "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
         build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:1.1.1-arm32v7"
         ;;
      'latest-arm64v8')
@@ -94,6 +95,7 @@ case "${DOCKER_TAG}" in
         QEMU_ARCH='arm'
         LABEL_VERSION="$(git ls-remote https://github.com/mayswind/AriaNg.git "${ARIANG_VERSION}" | head -1 | cut -f1)-rc1"
         prepare
+        sed -i -e "s/arm32v7\/nginx:alpine/arm32v7\/nginx:latest/g" "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
         build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     'edge-arm64v8')
