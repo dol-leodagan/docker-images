@@ -1,0 +1,6 @@
+version: '2'
+services:
+  ariang:
+    image: leodagan/ariang:latest
+    ports:
+      - "8080:80"
