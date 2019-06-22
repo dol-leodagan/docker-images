@@ -9,28 +9,28 @@ run_test()
 
 case "${DOCKER_TAG}" in
     'latest')
-        run_test "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     'latest-arm32v6')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     'latest-arm32v7')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     'latest-arm64v8')
-        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     'edge')
         run_test "${DOCKER_REPO}:${DOCKER_TAG}" && \
         ;;
     'edge-arm32v6')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     'edge-arm32v7')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
      'edge-arm64v8')
-        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}" && \
+        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
      *)
         echo "No tests to run for DOCKER_TAG:${DOCKER_TAG}"
