@@ -1,3 +1,49 @@
+docker-images-matrix:
+  executor: &images-executor-defaults
+    machine: true
+    working_directory: ~/docker
+  attach_step: &images-attach-workspace
+    attach_workspace:
+      at: ~/
+  persist_step: &images-persist-workspace
+    persist_to_workspace:
+      root: ~/
+      paths:
+        - docker
+  build-job: &images-build-job-default
+    <<: *images-executor-defaults
+    steps: &images-build-steps-default
+      - *images-attach-workspace
+      - run: |
+          if [ "$(git --no-pager log -1 --format=format:%H --full-diff "${PROJECT_PATH}")" != "${CIRCLE_SHA1}"  ]; then
+            echo "No changes in ${PROJECT_PATH} repository, skipping step..."
+            circleci-agent step halt
+          fi
+      - run: |
+          cd "${PROJECT_PATH}"
+          ./hooks/build
+      - run: |
+          cd "${PROJECT_PATH}"
+          ./hooks/test
+      - run: |
+          cd "${PROJECT_PATH}"
+          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+          ./hooks/push
+
+
+ariang-matrix:
+  environment: &ariang-env
+    PROJECT_PATH: ariang
+    DOCKERFILE_PATH: Dockerfile
+    DOCKER_REPO: leodagan/ariang
+  jobs: &ariang-jobs-matrix
+    ariang-build-latest-amd64:
+      <<: *images-build-job-default
+      environment:
+        <<: *ariang-env
+        DOCKER_TAG: latest
+    
+
 aria2-matrix:
   executor: &aria2-executor-defaults
     machine: true
@@ -200,6 +246,8 @@ jobs:
       - *aria2-attach-workspace
       - checkout
       - *aria2-persist-workspace
+
+  <<: *ariang-jobs-matrix
 
   aria2-build-latest-amd64:
     <<: *aria2-executor-defaults

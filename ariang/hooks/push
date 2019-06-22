@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+set -x
+
+docker push "${DOCKER_REPO}:${DOCKER_TAG}"
+
+case "${DOCKER_TAG}" in
+    'latest') docker push "${DOCKER_REPO}:1.1.1";;
+    'latest-arm32v6') docker push "${DOCKER_REPO}:1.1.1-arm32v6";;
+    'latest-arm32v7') docker push "${DOCKER_REPO}:1.1.1-arm32v7";;
+    'latest-arm64v8') docker push "${DOCKER_REPO}:1.1.1-arm64v8";;
+    'edge') ;;
+    'edge-arm32v6') ;;
+    'edge-arm32v7') ;;
+    'edge-arm64v8') ;;
+    *) echo "Unknown Docker Tag: ${DOCKER_TAG}" && exit 1;;
+esac
+
