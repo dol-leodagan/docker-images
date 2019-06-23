@@ -2,7 +2,7 @@ ARG BUILD_DATE=now
 ARG VCS_REF=local
 ARG BUILD_VERSION=dev
 
-FROM __DOCKER_ARCH__/alpine:latest as builder
+FROM __DOCKER_ARCH__/alpine:3.9 as builder
 
 ARG aria_version
 ARG make_jobs=4
