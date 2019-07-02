@@ -34,14 +34,18 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1" \
       maintainer="Leodagan <leodagan@freyad.net>"
 
-RUN set -ex; \
-    apk add --no-cache \
-      ppp-daemon \
-      iproute2 ;
-
+COPY qemu-__QEMU_ARCH__-static /usr/bin/
 COPY --from=builder /usr/sbin/pptp* /usr/sbin/
 COPY --from=builder /etc/ppp/options.pptp /etc/ppp/
 COPY entrypoint.sh /entrypoint.sh
+
+WORKDIR /
+
+RUN set -ex; \
+    apk add --no-cache \
+      ppp-daemon \
+      iproute2 ; \
+    rm -f /usr/bin/qemu-* ;
 
 WORKDIR /
 
