@@ -170,6 +170,72 @@ aria2-matrix:
         - aria2-build-edge-arm64v8:
             <<: *images-master-workflow
 
+pptp-matrix:
+  environment: &pptp-env
+    PROJECT_PATH: pptp
+    DOCKERFILE_PATH: Dockerfile
+    DOCKER_REPO: leodagan/pptp
+  jobs: &pptp-jobs-matrix
+    pptp-build-latest-amd64:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: latest
+    pptp-build-latest-arm32v6:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: latest-arm32v6
+    pptp-build-latest-arm32v7:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: latest-arm32v7
+    pptp-build-latest-arm64v8:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: latest-arm64v8
+    pptp-build-edge-amd64:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: edge
+    pptp-build-edge-arm32v6:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: edge-arm32v6
+    pptp-build-edge-arm32v7:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: edge-arm32v7
+    pptp-build-edge-arm64v8:
+      <<: *images-build-job-default
+      environment:
+        <<: *pptp-env
+        DOCKER_TAG: edge-arm64v8
+  workflows: &pptp-workflows-matrix
+    pptp:
+      jobs:
+        - docker-checkout
+        - pptp-build-latest-amd64:
+            <<: *images-master-workflow
+        - pptp-build-latest-arm32v6:
+            <<: *images-master-workflow
+        - pptp-build-latest-arm32v7:
+            <<: *images-master-workflow
+        - pptp-build-latest-arm64v8:
+            <<: *images-master-workflow
+        - pptp-build-edge-amd64:
+            <<: *images-master-workflow
+        - pptp-build-edge-arm32v6:
+            <<: *images-master-workflow
+        - pptp-build-edge-arm32v7:
+            <<: *images-master-workflow
+        - pptp-build-edge-arm64v8:
+            <<: *images-master-workflow
 
 version: 2
 
@@ -183,10 +249,11 @@ jobs:
 
   <<: *ariang-jobs-matrix
   <<: *aria2-jobs-matrix
-
+  <<: *pptp-jobs-matrix
 
 workflows:
   version: 2
   <<: *ariang-workflows-matrix
   <<: *aria2-workflows-matrix
+  <<: *pptp-workflows-matrix
 
