@@ -10,15 +10,60 @@ docker-images-matrix:
       root: ~/
       paths:
         - docker
-  build-job: &images-build-job-default
+  master-workflow: &images-master-workflow
+    filters:
+      branches:
+        only: master
+    requires:
+      - docker-checkout
+
+version: 2.1
+
+executors:
+  ariang:
     <<: *images-executor-defaults
-    steps: &images-build-steps-default
+    environment:
+      PROJECT_PATH: ariang
+      DOCKERFILE_PATH: Dockerfile
+      DOCKER_REPO: leodagan/ariang
+  aria2:
+    <<: *images-executor-defaults
+    environment:
+      PROJECT_PATH: aria2
+      DOCKERFILE_PATH: Dockerfile
+      DOCKER_REPO: leodagan/aria2
+  pptp:
+    <<: *images-executor-defaults
+    environment:
+      PROJECT_PATH: pptp
+      DOCKERFILE_PATH: Dockerfile
+      DOCKER_REPO: leodagan/pptp
+
+jobs:
+  docker-checkout:
+    parameters:
+      runner:
+        type: executor
+    executor: << parameters.runner >>
+    steps:
       - *images-attach-workspace
+      - checkout
       - run: |
           if [ "$(git --no-pager log -1 --format=format:%H --full-diff "${PROJECT_PATH}")" != "${CIRCLE_SHA1}"  ]; then
             echo "No changes in ${PROJECT_PATH} repository, skipping step..."
             circleci-agent step halt
           fi
+      - *images-persist-workspace
+
+  docker-build:
+    parameters:
+      docker-tag:
+        type: string
+      runner:
+        type: executor
+    executor: << parameters.runner >>
+    steps:
+      - *images-attach-workspace
       - run: |
           cd "${PROJECT_PATH}"
           ./hooks/build
@@ -29,231 +74,118 @@ docker-images-matrix:
           cd "${PROJECT_PATH}"
           echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
           ./hooks/push
-  master-workflow: &images-master-workflow
-    filters:
-      branches:
-        only: master
-    requires:
-      - docker-checkout
-
-ariang-matrix:
-  environment: &ariang-env
-    PROJECT_PATH: ariang
-    DOCKERFILE_PATH: Dockerfile
-    DOCKER_REPO: leodagan/ariang
-  jobs: &ariang-jobs-matrix
-    ariang-build-latest-amd64:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: latest
-    ariang-build-latest-arm32v6:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: latest-arm32v6
-    ariang-build-latest-arm32v7:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: latest-arm32v7
-    ariang-build-latest-arm64v8:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: latest-arm64v8
-    ariang-build-edge-amd64:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: edge
-    ariang-build-edge-arm32v6:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: edge-arm32v6
-    ariang-build-edge-arm32v7:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: edge-arm32v7
-    ariang-build-edge-arm64v8:
-      <<: *images-build-job-default
-      environment:
-        <<: *ariang-env
-        DOCKER_TAG: edge-arm64v8
-  workflows: &ariang-workflows-matrix
-    ariang:
-      jobs:
-        - docker-checkout
-        - ariang-build-latest-amd64:
-            <<: *images-master-workflow
-        - ariang-build-latest-arm32v6:
-            <<: *images-master-workflow
-        - ariang-build-latest-arm32v7:
-            <<: *images-master-workflow
-        - ariang-build-latest-arm64v8:
-            <<: *images-master-workflow
-        - ariang-build-edge-amd64:
-            <<: *images-master-workflow
-        - ariang-build-edge-arm32v6:
-            <<: *images-master-workflow
-        - ariang-build-edge-arm32v7:
-            <<: *images-master-workflow
-        - ariang-build-edge-arm64v8:
-            <<: *images-master-workflow
-
-aria2-matrix:
-  environment: &aria2-env
-    PROJECT_PATH: aria2
-    DOCKERFILE_PATH: Dockerfile
-    DOCKER_REPO: leodagan/aria2
-  jobs: &aria2-jobs-matrix
-    aria2-build-latest-amd64:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: latest
-    aria2-build-latest-arm32v6:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: latest-arm32v6
-    aria2-build-latest-arm32v7:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: latest-arm32v7
-    aria2-build-latest-arm64v8:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: latest-arm64v8
-    aria2-build-edge-amd64:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: edge
-    aria2-build-edge-arm32v6:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: edge-arm32v6
-    aria2-build-edge-arm32v7:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: edge-arm32v7
-    aria2-build-edge-arm64v8:
-      <<: *images-build-job-default
-      environment:
-        <<: *aria2-env
-        DOCKER_TAG: edge-arm64v8
-  workflows: &aria2-workflows-matrix
-    aria2:
-      jobs:
-        - docker-checkout
-        - aria2-build-latest-amd64:
-            <<: *images-master-workflow
-        - aria2-build-latest-arm32v6:
-            <<: *images-master-workflow
-        - aria2-build-latest-arm32v7:
-            <<: *images-master-workflow
-        - aria2-build-latest-arm64v8:
-            <<: *images-master-workflow
-        - aria2-build-edge-amd64:
-            <<: *images-master-workflow
-        - aria2-build-edge-arm32v6:
-            <<: *images-master-workflow
-        - aria2-build-edge-arm32v7:
-            <<: *images-master-workflow
-        - aria2-build-edge-arm64v8:
-            <<: *images-master-workflow
-
-pptp-matrix:
-  environment: &pptp-env
-    PROJECT_PATH: pptp
-    DOCKERFILE_PATH: Dockerfile
-    DOCKER_REPO: leodagan/pptp
-  jobs: &pptp-jobs-matrix
-    pptp-build-latest-amd64:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: latest
-    pptp-build-latest-arm32v6:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: latest-arm32v6
-    pptp-build-latest-arm32v7:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: latest-arm32v7
-    pptp-build-latest-arm64v8:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: latest-arm64v8
-    pptp-build-edge-amd64:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: edge
-    pptp-build-edge-arm32v6:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: edge-arm32v6
-    pptp-build-edge-arm32v7:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: edge-arm32v7
-    pptp-build-edge-arm64v8:
-      <<: *images-build-job-default
-      environment:
-        <<: *pptp-env
-        DOCKER_TAG: edge-arm64v8
-  workflows: &pptp-workflows-matrix
-    pptp:
-      jobs:
-        - docker-checkout
-        - pptp-build-latest-amd64:
-            <<: *images-master-workflow
-        - pptp-build-latest-arm32v6:
-            <<: *images-master-workflow
-        - pptp-build-latest-arm32v7:
-            <<: *images-master-workflow
-        - pptp-build-latest-arm64v8:
-            <<: *images-master-workflow
-        - pptp-build-edge-amd64:
-            <<: *images-master-workflow
-        - pptp-build-edge-arm32v6:
-            <<: *images-master-workflow
-        - pptp-build-edge-arm32v7:
-            <<: *images-master-workflow
-        - pptp-build-edge-arm64v8:
-            <<: *images-master-workflow
-
-version: 2
-
-jobs:
-  docker-checkout:
-    <<: *images-executor-defaults
-    steps:
-      - *images-attach-workspace
-      - checkout
-      - *images-persist-workspace
-
-  <<: *ariang-jobs-matrix
-  <<: *aria2-jobs-matrix
-  <<: *pptp-jobs-matrix
+    environment:
+      DOCKER_TAG: << parameters.docker-tag >>
 
 workflows:
   version: 2
-  <<: *ariang-workflows-matrix
-  <<: *aria2-workflows-matrix
-  <<: *pptp-workflows-matrix
+  pptp:
+    jobs:
+      - docker-checkout:
+          runner: pptp
+      - docker-build:
+          runner: pptp
+          docker-tag: latest
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: latest-arm32v6
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: latest-arm32v7
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: latest-arm64v8
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: edge
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: edge-arm32v6
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: edge-arm32v7
+          <<: *images-master-workflow
+      - docker-build:
+          runner: pptp
+          docker-tag: edge-arm64v8
+          <<: *images-master-workflow
+  ariang:
+    jobs:
+      - docker-checkout:
+          runner: ariang
+      - docker-build:
+          runner: ariang
+          docker-tag: latest
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: latest-arm32v6
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: latest-arm32v7
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: latest-arm64v8
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: edge
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: edge-arm32v6
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: edge-arm32v7
+          <<: *images-master-workflow
+      - docker-build:
+          runner: ariang
+          docker-tag: edge-arm64v8
+          <<: *images-master-workflow
+  aria2:
+    jobs:
+      - docker-checkout:
+          runner: aria2
+      - docker-build:
+          runner: aria2
+          docker-tag: latest
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: latest-arm32v6
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: latest-arm32v7
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: latest-arm64v8
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: edge
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: edge-arm32v6
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: edge-arm32v7
+          <<: *images-master-workflow
+      - docker-build:
+          runner: aria2
+          docker-tag: edge-arm64v8
+          <<: *images-master-workflow
 
+          
