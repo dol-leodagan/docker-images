@@ -66,6 +66,7 @@ jobs:
       - *images-attach-workspace
       - run: |
           [ ! -e "${PROJECT_PATH}" ] && circleci-agent step halt
+      - run: |
           cd "${PROJECT_PATH}"
           ./hooks/build
       - run: |
