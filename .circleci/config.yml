@@ -85,21 +85,20 @@ jobs:
     environment:
       DOCKER_TAG: << parameters.docker-tag >>
 
-    docker-publish:
-      parameters:
-        badge-hook:
-          type: string
-        runner:
-          type: executor
-      executor: << parameters.runner >>
-      steps:
-        - *images-attach-workspace
-        - run: |
-            if [ ! -e "${PROJECT_PATH}" ]; then circleci-agent step halt; fi
-        - run: curl -X POST '<< parameters.badge-hook >>'
+  docker-publish:
+    parameters:
+      badge-hook:
+        type: string
+      runner:
+        type: executor
+    executor: << parameters.runner >>
+    steps:
+      - *images-attach-workspace
+      - run: |
+          if [ ! -e "${PROJECT_PATH}" ]; then circleci-agent step halt; fi
+      - run: curl -X POST '<< parameters.badge-hook >>'
 
 workflows:
-  version: 2
   pptp:
     jobs:
       - docker-checkout:
