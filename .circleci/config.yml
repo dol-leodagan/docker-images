@@ -16,6 +16,12 @@ docker-images-matrix:
         only: master
     requires:
       - docker-checkout
+  publish-workflow: &images-publish-workflow
+    filters:
+      branches:
+        only: master
+    requires:
+      - docker-build
 
 version: 2.1
 
@@ -79,6 +85,19 @@ jobs:
     environment:
       DOCKER_TAG: << parameters.docker-tag >>
 
+    docker-publish:
+      parameters:
+        badge-hook:
+          type: string
+        runner:
+          type: executor
+      executor: << parameters.runner >>
+      steps:
+        - *images-attach-workspace
+        - run: |
+            if [ ! -e "${PROJECT_PATH}" ]; then circleci-agent step halt; fi
+        - run: curl -X POST '<< parameters.badge-hook >>'
+
 workflows:
   version: 2
   pptp:
@@ -117,6 +136,10 @@ workflows:
           runner: pptp
           docker-tag: edge-arm64v8
           <<: *images-master-workflow
+      - docker-publish:
+          runner: ariang
+          badge-hook: https://hooks.microbadger.com/images/leodagan/pptp/Oaje7NSXWyvxNuW--LAn11_gqoE=
+          <<: *images-publish-workflow
   ariang:
     jobs:
       - docker-checkout:
@@ -153,6 +176,10 @@ workflows:
           runner: ariang
           docker-tag: edge-arm64v8
           <<: *images-master-workflow
+      - docker-publish:
+          runner: ariang
+          badge-hook: https://hooks.microbadger.com/images/leodagan/ariang/xcN8593pqjchKNuVtW7oCgFdebU=
+          <<: *images-publish-workflow
   aria2:
     jobs:
       - docker-checkout:
@@ -189,5 +216,8 @@ workflows:
           runner: aria2
           docker-tag: edge-arm64v8
           <<: *images-master-workflow
+      - docker-publish:
+          runner: aria2
+          badge-hook: https://hooks.microbadger.com/images/leodagan/aria2/iUEnHO2bAU5Nk48i4D6VpzzOlMQ=
+          <<: *images-publish-workflow
 
-          
