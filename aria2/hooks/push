@@ -4,6 +4,11 @@ set -x
 
 . "$(dirname "$0")/versions"
 
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
 docker push "${DOCKER_REPO}:${DOCKER_TAG}"
 
 case "${DOCKER_TAG}" in

@@ -2,6 +2,11 @@
 
 set -x
 
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
 run_test()
 {
     docker run --rm --entrypoint ping "$@" -c3 google.com
