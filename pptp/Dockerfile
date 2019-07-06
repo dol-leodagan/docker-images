@@ -25,6 +25,10 @@ RUN set -ex; \
 
 FROM __DOCKER_ARCH__/alpine:3.9 as final
 
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
+
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=${BUILD_VERSION} \
       org.label-schema.vcs-ref=$VCS_REF \

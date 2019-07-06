@@ -46,6 +46,10 @@ RUN apk add --no-cache \
 
 FROM scratch as static
 
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
+
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$BUILD_VERSION \
       org.label-schema.vcs-ref=$VCS_REF \
@@ -67,6 +71,10 @@ WORKDIR /download
 ENTRYPOINT ["aria2c"]
 
 FROM __DOCKER_ARCH__/busybox:musl as embedded
+
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=${BUILD_VERSION}-busybox \

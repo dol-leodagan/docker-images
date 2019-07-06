@@ -2,6 +2,11 @@ pptp
 ----
 Containerized Client for PPTP VPN
 
+| Tag | amd64 | arm32v6 | arm32v7 | arm64v8 |
+| ------------ | ------------ | ------------ | ------------ | ------------ |
+| latest, 1.10.0 | [![](https://images.microbadger.com/badges/image/leodagan/pptp:latest.svg)](https://microbadger.com/images/leodagan/pptp:latest "Get your own image badge on microbadger.com") | [![](https://images.microbadger.com/badges/image/leodagan/pptp:latest-arm32v6.svg)](https://microbadger.com/images/leodagan/pptp:latest-arm32v6 "Get your own image badge on microbadger.com") | [![](https://images.microbadger.com/badges/image/leodagan/pptp:latest-arm32v7.svg)](https://microbadger.com/images/leodagan/pptp:latest-arm32v7 "Get your own image badge on microbadger.com") | [![](https://images.microbadger.com/badges/image/leodagan/pptp:latest-arm64v8.svg)](https://microbadger.com/images/leodagan/pptp:latest:latest-arm64v8 "Get your own image badge on microbadger.com") |
+| edge | [![](https://images.microbadger.com/badges/image/leodagan/pptp:edge.svg)](https://microbadger.com/images/leodagan/pptp:edge "Get your own image badge on microbadger.com") | [![](https://images.microbadger.com/badges/image/leodagan/pptp:edge-arm32v6.svg)](https://microbadger.com/images/leodagan/pptp:edge:edge-arm32v6 "Get your own image badge on microbadger.com") | [![](https://images.microbadger.com/badges/image/leodagan/pptp:edge-arm32v7.svg)](https://microbadger.com/images/leodagan/pptp:edge-arm32v7 "Get your own image badge on microbadger.com") | [![](https://images.microbadger.com/badges/image/leodagan/pptp:edge-arm64v8.svg)](https://microbadger.com/images/leodagan/pptp:edge-arm64v8 "Get your own image badge on microbadger.com") |
+
 Prerequisites
 ----
 | Kernel Config | Module |
