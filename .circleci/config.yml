@@ -20,8 +20,6 @@ docker-images-matrix:
     filters:
       branches:
         only: master
-    requires:
-      - docker-build
 
 version: 2.1
 
@@ -105,118 +103,170 @@ workflows:
           runner: pptp
       - docker-build:
           runner: pptp
-          docker-tag: latest
+          docker-tag: &tag latest
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: latest-arm32v6
+          docker-tag: &tag latest-arm32v6
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: latest-arm32v7
+          docker-tag: &tag latest-arm32v7
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: latest-arm64v8
+          docker-tag: &tag latest-arm64v8
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: edge
+          docker-tag: &tag edge
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: edge-arm32v6
+          docker-tag: &tag edge-arm32v6
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: edge-arm32v7
+          docker-tag: &tag edge-arm32v7
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: pptp
-          docker-tag: edge-arm64v8
+          docker-tag: &tag edge-arm64v8
+          name: *tag
           <<: *images-master-workflow
       - docker-publish:
           runner: ariang
           badge-hook: https://hooks.microbadger.com/images/leodagan/pptp/Oaje7NSXWyvxNuW--LAn11_gqoE=
           <<: *images-publish-workflow
+          requires:
+            - latest
+            - latest-arm32v6
+            - latest-arm32v7
+            - latest-arm64v8
+            - edge
+            - edge-arm32v6
+            - edge-arm32v7
+            - edge-arm64v8
   ariang:
     jobs:
       - docker-checkout:
           runner: ariang
       - docker-build:
           runner: ariang
-          docker-tag: latest
+          docker-tag: &tag latest
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: latest-arm32v6
+          docker-tag: &tag latest-arm32v6
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: latest-arm32v7
+          docker-tag: &tag latest-arm32v7
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: latest-arm64v8
+          docker-tag: &tag latest-arm64v8
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: edge
+          docker-tag: &tag edge
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: edge-arm32v6
+          docker-tag: &tag edge-arm32v6
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: edge-arm32v7
+          docker-tag: &tag edge-arm32v7
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: ariang
-          docker-tag: edge-arm64v8
+          docker-tag: &tag edge-arm64v8
+          name: *tag
           <<: *images-master-workflow
       - docker-publish:
           runner: ariang
           badge-hook: https://hooks.microbadger.com/images/leodagan/ariang/xcN8593pqjchKNuVtW7oCgFdebU=
           <<: *images-publish-workflow
+          requires:
+            - latest
+            - latest-arm32v6
+            - latest-arm32v7
+            - latest-arm64v8
+            - edge
+            - edge-arm32v6
+            - edge-arm32v7
+            - edge-arm64v8
+
   aria2:
     jobs:
       - docker-checkout:
           runner: aria2
       - docker-build:
           runner: aria2
-          docker-tag: latest
+          docker-tag: &tag latest
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: latest-arm32v6
+          docker-tag: &tag latest-arm32v6
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: latest-arm32v7
+          docker-tag: &tag latest-arm32v7
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: latest-arm64v8
+          docker-tag: &tag latest-arm64v8
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: edge
+          docker-tag: &tag edge
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: edge-arm32v6
+          docker-tag: &tag edge-arm32v6
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: edge-arm32v7
+          docker-tag: &tag edge-arm32v7
+          name: *tag
           <<: *images-master-workflow
       - docker-build:
           runner: aria2
-          docker-tag: edge-arm64v8
+          docker-tag: &tag edge-arm64v8
+          name: *tag
           <<: *images-master-workflow
       - docker-publish:
           runner: aria2
           badge-hook: https://hooks.microbadger.com/images/leodagan/aria2/iUEnHO2bAU5Nk48i4D6VpzzOlMQ=
           <<: *images-publish-workflow
+          requires:
+            - latest
+            - latest-arm32v6
+            - latest-arm32v7
+            - latest-arm64v8
+            - edge
+            - edge-arm32v6
+            - edge-arm32v7
+            - edge-arm64v8
 
