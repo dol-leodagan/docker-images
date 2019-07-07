@@ -1,0 +1,100 @@
+#!/usr/bin/env sh
+
+set -x
+
+. "$(dirname "$0")/versions"
+. "$(dirname "$0")/../../scripts/global_functions.sh"
+
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
+DOCKER_ARCH="$(docker_tag_to_docker_arch "${DOCKER_TAG}")"
+
+prepare_dockerfile_qemu "${DOCKERFILE_PATH}" "${DOCKER_ARCH}"
+
+build()
+{
+    build_docker_image \
+        --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
+        "$@"
+}
+
+case "${DOCKER_TAG}" in
+    latest)
+        build \
+            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}" \
+            --target static && \
+        build \
+            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:alpine" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-alpine" \
+            --target embedded-alpine && \
+        build \
+            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-busybox" \
+            --target embedded-busybox
+        ;;
+    latest-*)
+        build \
+            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-${DOCKER_ARCH}" \
+            --target static && \
+        build \
+            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:alpine-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-${DOCKER_ARCH}" \
+            --target embedded-alpine && \
+        build \
+            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-${DOCKER_ARCH}" \
+            --target embedded-busybox
+
+        ;;
+     edge)
+        build \
+            --build-arg filebrowser_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://github.com/filebrowser/filebrowser.git master | head -1 | cut -f1)-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" \
+            --target static && \
+        build \
+            --build-arg filebrowser_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://github.com/filebrowser/filebrowser.git master | head -1 | cut -f1)-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}-alpine" \
+            --target embedded-alpine && \
+        build \
+            --build-arg filebrowser_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://github.com/filebrowser/filebrowser.git master | head -1 | cut -f1)-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}-busybox" \
+            --target embedded-busybox
+        ;;
+     edge-*)
+        build \
+            --build-arg filebrowser_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://github.com/filebrowser/filebrowser.git master | head -1 | cut -f1)-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" \
+            --target static && \
+        build \
+            --build-arg filebrowser_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://github.com/filebrowser/filebrowser.git master | head -1 | cut -f1)-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:edge-alpine-${DOCKER_ARCH}" \
+            --target embedded-alpine && \
+        build \
+            --build-arg filebrowser_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://github.com/filebrowser/filebrowser.git master | head -1 | cut -f1)-rc${FILEBROWSER_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:edge-busybox-${DOCKER_ARCH}" \
+            --target embedded-busybox
+        ;;
+
+    *)
+        echo "Unsupported Docker Tag : ${DOCKER_TAG}"
+        exit 1
+        ;;
+esac
+

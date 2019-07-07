@@ -1,0 +1,33 @@
+#!/usr/bin/env sh
+
+set -x
+
+. "$(dirname "$0")/../../scripts/global_functions.sh"
+
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
+qemu_test "${DOCKER_REPO}:${DOCKER_TAG}" config init
+
+DOCKER_ARCH="$(docker_tag_to_docker_arch "${DOCKER_TAG}")"
+
+case "${DOCKER_TAG}" in
+    latest)
+        qemu_test "${DOCKER_REPO}:busybox" config init
+        qemu_test "${DOCKER_REPO}:alpine" config init
+    ;;
+    latest-*)
+        qemu_test "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" config init
+        qemu_test "${DOCKER_REPO}:alpine-${DOCKER_ARCH}" config init
+    ;;
+    edge)
+        qemu_test "${DOCKER_REPO}:edge-busybox" config init
+        qemu_test "${DOCKER_REPO}:edge-alpine" config init
+    ;;
+    edge-*)
+        qemu_test "${DOCKER_REPO}:edge-busybox-${DOCKER_ARCH}" config init
+        qemu_test "${DOCKER_REPO}:edge-alpine-${DOCKER_ARCH}" config init
+    ;;
+esac
