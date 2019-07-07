@@ -3,23 +3,11 @@
 set -x
 
 . "$(dirname "$0")/versions"
+. "$(dirname "$0")/../../scripts/global_functions.sh"
 
 if [ "${DO_NOTHING}" = "true" ]; then
     echo "Not doing anything because DO_NOTHING flag is set to true"
     exit 0
 fi
 
-docker push "${DOCKER_REPO}:${DOCKER_TAG}"
-
-case "${DOCKER_TAG}" in
-    'latest') docker push "${DOCKER_REPO}:${PPTP_REF_VERSION}";;
-    'latest-arm32v6') docker push "${DOCKER_REPO}:${PPTP_REF_VERSION}-arm32v6";;
-    'latest-arm32v7') docker push "${DOCKER_REPO}:${PPTP_REF_VERSION}-arm32v7";;
-    'latest-arm64v8') docker push "${DOCKER_REPO}:${PPTP_REF_VERSION}-arm64v8";;
-    'edge') ;;
-    'edge-arm32v6') ;;
-    'edge-arm32v7') ;;
-    'edge-arm64v8') ;;
-    *) echo "Unknown Docker Tag: ${DOCKER_TAG}" && exit 1;;
-esac
-
+push_docker_image_with_ref "${DOCKER_REPO}" "${DOCKER_TAG}" "${PPTP_REF_VERSION}"

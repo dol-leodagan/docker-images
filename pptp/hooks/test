@@ -2,44 +2,11 @@
 
 set -x
 
+. "$(dirname "$0")/../../scripts/global_functions.sh"
+
 if [ "${DO_NOTHING}" = "true" ]; then
     echo "Not doing anything because DO_NOTHING flag is set to true"
     exit 0
 fi
 
-run_test()
-{
-    docker run --rm --entrypoint ping "$@" -c3 google.com
-}
-
-case "${DOCKER_TAG}" in
-    'latest')
-        run_test "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'latest-arm32v6')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'latest-arm32v7')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'latest-arm64v8')
-        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'edge')
-        run_test "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'edge-arm32v6')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'edge-arm32v7')
-        run_test -v "$(pwd)/"qemu-arm-static:/usr/bin/qemu-arm-static "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-     'edge-arm64v8')
-        run_test -v "$(pwd)/"qemu-aarch64-static:/usr/bin/qemu-aarch64-static "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-     *)
-        echo "No tests to run for DOCKER_TAG:${DOCKER_TAG}"
-        exit 1
-        ;;
-esac
-
+qemu_test --entrypoint ping "${DOCKER_REPO}:${DOCKER_TAG}" -c3 google.com

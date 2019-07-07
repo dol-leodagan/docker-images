@@ -3,113 +3,43 @@
 set -x
 
 . "$(dirname "$0")/versions"
+. "$(dirname "$0")/../../scripts/global_functions.sh"
 
 if [ "${DO_NOTHING}" = "true" ]; then
     echo "Not doing anything because DO_NOTHING flag is set to true"
     exit 0
 fi
 
-prepare()
-{
-    if [ "${DOCKER_ARCH}x" = "x" ] || [ "${DOCKER_ARCH}" = "amd64" ]; then
-        sed \
-            -e "s/__DOCKER_ARCH__/amd64/g" \
-            -e "/__QEMU_ARCH__/d" \
-            "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
-    else
-        QEMU_USER_STATIC_DOWNLOAD_URL="https://github.com/multiarch/qemu-user-static/releases/download"
-        QEMU_USER_STATIC_LATEST_TAG=$(curl -sL https://api.github.com/repos/multiarch/qemu-user-static/tags \
-            | grep 'name.*v[0-9]' \
-            | head -n 1 \
-            | cut -d '"' -f 4)
+DOCKER_ARCH="$(docker_tag_to_docker_arch "${DOCKER_TAG}")"
 
-        curl -sL "${QEMU_USER_STATIC_DOWNLOAD_URL}/${QEMU_USER_STATIC_LATEST_TAG}/x86_64_qemu-${QEMU_ARCH}-static.tar.gz" \
-            | tar xzv
-
-        sed \
-            -e "s/__DOCKER_ARCH__/${DOCKER_ARCH}/g" \
-            -e "s/__QEMU_ARCH__/${QEMU_ARCH}/g" \
-            "${DOCKERFILE_PATH}" > "${DOCKERFILE_PATH}.${DOCKER_ARCH}"
-
-        docker run --rm --privileged multiarch/qemu-user-static:register --reset
-    fi
-}
+prepare_dockerfile_qemu "${DOCKERFILE_PATH}" "${DOCKER_ARCH}"
 
 build_final()
 {
-    docker build \
+    build_docker_image \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
-        --build-arg pptp_version="${PPTP_VERSION}" \
-        --build-arg BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-        --build-arg VCS_REF="$(git rev-parse --short HEAD)" \
-        --build-arg BUILD_VERSION="${LABEL_VERSION}" \
         --target final \
-        "$@" \
-        .
+        "$@"
 }
 
 case "${DOCKER_TAG}" in
-    'latest')
-        PPTP_VERSION="tags/${PPTP_REF_VERSION}"
-        DOCKER_ARCH='amd64'
-        LABEL_VERSION="${PPTP_REF_VERSION}-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}"
+    latest)
+        build_final \
+            --build-arg pptp_version="tags/${PPTP_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${PPTP_REF_VERSION}-rc${PPTP_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}"
         ;;
-    'latest-arm32v6')
-        PPTP_VERSION="tags/${PPTP_REF_VERSION}"
-        DOCKER_ARCH='arm32v6'
-        QEMU_ARCH='arm'
-        LABEL_VERSION="${PPTP_REF_VERSION}-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}-arm32v6"
+    latest-*)
+        build_final \
+            --build-arg pptp_version="tags/${PPTP_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${PPTP_REF_VERSION}-rc${PPTP_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}-${DOCKER_ARCH}"
         ;;
-    'latest-arm32v7')
-        PPTP_VERSION="tags/${PPTP_REF_VERSION}"
-        DOCKER_ARCH='arm32v7'
-        QEMU_ARCH='arm'
-        LABEL_VERSION="${PPTP_REF_VERSION}-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}-arm32v7"
-        ;;
-     'latest-arm64v8')
-        PPTP_VERSION="tags/${PPTP_REF_VERSION}"
-        DOCKER_ARCH='arm64v8'
-        QEMU_ARCH='aarch64'
-        LABEL_VERSION="${PPTP_REF_VERSION}-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}-arm64v8"
-        ;;
-     'edge')
-        PPTP_VERSION='master'
-        DOCKER_ARCH='amd64'
-        LABEL_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git "${PPTP_VERSION}" | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'edge-arm32v6')
-        PPTP_VERSION='master'
-        DOCKER_ARCH='arm32v6'
-        QEMU_ARCH='arm'
-        LABEL_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git "${PPTP_VERSION}" | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'edge-arm32v7')
-        PPTP_VERSION='master'
-        DOCKER_ARCH='arm32v7'
-        QEMU_ARCH='arm'
-        LABEL_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git "${PPTP_VERSION}" | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
-        ;;
-    'edge-arm64v8')
-        PPTP_VERSION='master'
-        DOCKER_ARCH='arm64v8'
-        QEMU_ARCH='aarch64'
-        LABEL_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git "${PPTP_VERSION}" | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}"
-        prepare
-        build_final --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+     edge*)
+        build_docker_image \
+            --build-arg pptp_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git "${PPTP_VERSION}" | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     *)
         echo "Unsupported Docker Tag : ${DOCKER_TAG}"
