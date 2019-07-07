@@ -36,9 +36,9 @@ case "${DOCKER_TAG}" in
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTP_REF_VERSION}-${DOCKER_ARCH}"
         ;;
      edge*)
-        build_docker_image \
+        build_final \
             --build-arg pptp_version="master" \
-            --build-arg BUILD_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git "${PPTP_VERSION}" | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://git.code.sf.net/p/pptpclient/git master | head -1 | cut -f1)-rc${PPTP_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}"
         ;;
     *)

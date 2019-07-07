@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 export PPTP_REF_VERSION="1.10.0"
-export PPTP_IMAGE_VERSION="3"
+export PPTP_IMAGE_VERSION="4"
 
