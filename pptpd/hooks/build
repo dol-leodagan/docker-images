@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+
+set -x
+
+. "$(dirname "$0")/versions"
+. "$(dirname "$0")/../../scripts/global_functions.sh"
+
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
+DOCKER_ARCH="$(docker_tag_to_docker_arch "${DOCKER_TAG}")"
+
+prepare_dockerfile_qemu "${DOCKERFILE_PATH}" "${DOCKER_ARCH}"
+
+build_final()
+{
+    build_docker_image \
+        --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
+        --target final \
+        "$@"
+}
+
+case "${DOCKER_TAG}" in
+    latest)
+        build_final \
+            --build-arg pptpd_version="tags/${PPTPD_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${PPTPD_REF_VERSION}-rc${PPTPD_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTPD_REF_VERSION}"
+        ;;
+    latest-*)
+        build_final \
+            --build-arg pptpd_version="tags/${PPTPD_REF_VERSION}" \
+            --build-arg BUILD_VERSION="${PPTPD_REF_VERSION}-rc${PPTPD_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTPD_REF_VERSION}-${DOCKER_ARCH}"
+        ;;
+     edge*)
+        build_final \
+            --build-arg pptpd_version="master" \
+            --build-arg BUILD_VERSION="$(git ls-remote https://git.code.sf.net/p/poptop/git master | head -1 | cut -f1)-rc${PPTPD_IMAGE_VERSION}" \
+            --tag "${DOCKER_REPO}:${DOCKER_TAG}"
+        ;;
+    *)
+        echo "Unsupported Docker Tag : ${DOCKER_TAG}"
+        exit 1
+        ;;
+esac
+

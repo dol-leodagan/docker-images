@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -x
+
+. "$(dirname "$0")/../../scripts/global_functions.sh"
+
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
+qemu_test --entrypoint ping "${DOCKER_REPO}:${DOCKER_TAG}" -c3 google.com

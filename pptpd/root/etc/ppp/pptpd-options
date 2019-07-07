@@ -1,0 +1,21 @@
+name pptpd
+refuse-pap
+refuse-chap
+refuse-mschap
+require-mschap-v2
+require-mppe-128
+
+# Network and Routing
+proxyarp
+nodefaultroute
+
+# Logging
+# debug
+# dump
+
+# Miscellaneous
+lock
+nobsdcomp
+novj
+novjccomp
+logfd 1

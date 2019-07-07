@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+
+set -x
+
+. "$(dirname "$0")/versions"
+. "$(dirname "$0")/../../scripts/global_functions.sh"
+
+if [ "${DO_NOTHING}" = "true" ]; then
+    echo "Not doing anything because DO_NOTHING flag is set to true"
+    exit 0
+fi
+
+push_docker_image_with_ref "${DOCKER_REPO}" "${DOCKER_TAG}" "${PPTPD_REF_VERSION}"

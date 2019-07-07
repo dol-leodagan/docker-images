@@ -2,12 +2,12 @@ ARG BUILD_DATE=now
 ARG VCS_REF=local
 ARG BUILD_VERSION=dev
 
-FROM amd64/alpine:3.9 as builder
+FROM __DOCKER_ARCH__/alpine:3.9 as builder
 
 ARG pptpd_version
 ARG make_jobs=4
 
-#COPY qemu-__QEMU_ARCH__-static /usr/bin/
+COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
 RUN set -ex; \
     apk add --no-cache \
@@ -27,7 +27,11 @@ RUN set -ex; \
     make -j"${make_jobs}" ; \
     make install ;
 
-FROM amd64/alpine:3.9 as final
+FROM __DOCKER_ARCH__/alpine:3.9 as final
+
+ARG BUILD_DATE
+ARG VCS_REF
+ARG BUILD_VERSION
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=${BUILD_VERSION} \
@@ -38,8 +42,22 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1" \
       maintainer="Leodagan <leodagan@freyad.net>"
 
-COPY --from=builder 
+COPY qemu-__QEMU_ARCH__-static /usr/bin/
+
+RUN set -ex; \
+    apk add --no-cache \
+      ppp-daemon \
+      iproute2 ; \
+    rm -f /usr/bin/qemu-* ;
+
+COPY --from=builder /usr/lib/pptpd/ /usr/lib/pptpd/
+COPY --from=builder /usr/sbin/pptp* /usr/sbin/
+COPY --from=builder /usr/sbin/bcrelay /usr/sbin/bcrelay
+
+COPY root/ /
 
 WORKDIR /
 
-ENTRYPOINT ["pptpd"]
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["pptpd", "--fg"]
