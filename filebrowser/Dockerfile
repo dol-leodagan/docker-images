@@ -2,12 +2,10 @@ ARG BUILD_DATE=now
 ARG VCS_REF=local
 ARG BUILD_VERSION=dev
 
-FROM __DOCKER_ARCH__/golang:1.12-alpine as builder
+FROM amd64/golang:1.12-alpine as builder
 
 ARG filebrowser_version
 ARG make_jobs=4
-
-COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
 WORKDIR /
 
@@ -38,6 +36,19 @@ RUN set -ex; \
     rice embed-go ; \
     echo "### Building Filebrowser" ; \
     cd .. ; \
+    case "__DOCKER_ARCH__" in \
+        arm32v6) \
+            export GOARCH="arm"; \
+            export GOARM="6"; \
+        ;; \
+        arm32v7) \
+            export GOARCH="arm"; \
+            export GOARM="7"; \
+        ;; \
+        arm64v8) \
+            export GOARCH="arm64"; \
+        ;; \
+    esac ; \
     go build -o filebrowser -ldflags "-s -w -X github.com/filebrowser/filebrowser/v2/version.CommitSHA=$(git rev-parse --short HEAD)" main.go
 
 FROM scratch as static
