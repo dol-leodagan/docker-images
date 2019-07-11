@@ -11,6 +11,8 @@ fi
 
 qemu_test "${DOCKER_REPO}:${DOCKER_TAG}" "https://www.google.com" || exit 1
 
+DOCKER_ARCH="$(docker_tag_to_docker_arch "${DOCKER_TAG}")"
+
 case "${DOCKER_TAG}" in
     latest)
         qemu_test "${DOCKER_REPO}:busybox" "https://www.google.com"
