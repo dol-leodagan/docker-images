@@ -19,7 +19,7 @@ build()
     build_docker_image \
         --file "${DOCKERFILE_PATH}.${DOCKER_ARCH}" \
         --target final \
-        "$@" \
+        "$@"
 }
 
 case "${DOCKER_TAG}" in
