@@ -16,13 +16,13 @@ case "${DOCKER_TAG}" in
         qemu_test "${DOCKER_REPO}:busybox" "https://www.google.com"
     ;;
     latest-*)
-        qemu_test "${DOCKER_REPO}:busybox-${DOCKER_TAG}" "https://www.google.com"
+        qemu_test "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" "https://www.google.com"
     ;;
     edge)
         qemu_test "${DOCKER_REPO}:edge-busybox" "https://www.google.com"
     ;;
     edge-*)
-        qemu_test "${DOCKER_REPO}:edge-busybox-${DOCKER_TAG}" "https://www.google.com"
+        qemu_test "${DOCKER_REPO}:edge-busybox-${DOCKER_ARCH}" "https://www.google.com"
     ;;
     *)
         echo "No tests to run for DOCKER_TAG:${DOCKER_TAG}" && \
