@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 export ARIANG_REF_VERSION="1.1.1"
-export ARIANG_IMAGE_VERSION="4"
+export ARIANG_IMAGE_VERSION="5"
 

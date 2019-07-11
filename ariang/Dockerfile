@@ -39,6 +39,12 @@ RUN set -ex; \
     }' /etc/nginx/conf.d/default.conf.template
 
 
+FROM scratch as filer
+
+COPY --from=builder /AriaNg/dist /usr/share/nginx/html
+COPY --from=middle /etc/nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
+
+
 FROM __DOCKER_ARCH__/nginx:alpine as final
 
 ARG BUILD_DATE
@@ -55,8 +61,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1" \
       maintainer="Leodagan <leodagan@freyad.net>"
 
-COPY --from=builder /AriaNg/dist /usr/share/nginx/html
-COPY --from=middle /etc/nginx/conf.d/default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY --from=filer / /
 
 CMD [ "sh", "-c", "sed -e 's#__ARIANG_JSONRPC_STRING__#'\"${ARIANG_JSONRPC_STRING}\"'#' /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'" ]
 

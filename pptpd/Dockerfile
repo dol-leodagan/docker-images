@@ -27,6 +27,16 @@ RUN set -ex; \
     make -j"${make_jobs}" ; \
     make install ;
 
+
+FROM scratch as filer
+
+COPY --from=builder /usr/lib/pptpd/ /usr/lib/pptpd/
+COPY --from=builder /usr/sbin/pptp* /usr/sbin/
+COPY --from=builder /usr/sbin/bcrelay /usr/sbin/bcrelay
+
+COPY root/ /
+
+
 FROM __DOCKER_ARCH__/alpine:3.9 as final
 
 ARG BUILD_DATE
@@ -50,11 +60,7 @@ RUN set -ex; \
       iproute2 ; \
     rm -f /usr/bin/qemu-* ;
 
-COPY --from=builder /usr/lib/pptpd/ /usr/lib/pptpd/
-COPY --from=builder /usr/sbin/pptp* /usr/sbin/
-COPY --from=builder /usr/sbin/bcrelay /usr/sbin/bcrelay
-
-COPY root/ /
+COPY --from=filer / /
 
 WORKDIR /
 
