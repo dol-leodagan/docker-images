@@ -44,6 +44,12 @@ RUN apk add --no-cache \
     make install && \
     mkdir /download
 
+FROM scratch as filer
+
+COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /download /download
+
 FROM scratch as static
 
 ARG BUILD_DATE
@@ -60,9 +66,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1" \
       maintainer="Leodagan <leodagan@freyad.net>"
 
-COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /download /download
+COPY --from=filer / /
 
 EXPOSE 6800
 
@@ -85,9 +89,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1" \
       maintainer="Leodagan <leodagan@freyad.net>"
 
-COPY --from=builder /usr/local/bin/aria2c /usr/local/bin/aria2c
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /download /download
+COPY --from=filer / /
 
 EXPOSE 6800
 
