@@ -16,24 +16,24 @@ DOCKER_ARCH="$(docker_tag_to_docker_arch "${DOCKER_TAG}")"
 
 case "${DOCKER_TAG}" in
     latest)
-        push_docker_image_with_ref "${DOCKER_REPO}" busybox
-        push_docker_image_with_ref "${DOCKER_REPO}" "${FILEBROWSER_REF_VERSION}-busybox"
-        push_docker_image_with_ref "${DOCKER_REPO}" alpine
+        push_docker_image_with_ref "${DOCKER_REPO}" busybox && \
+        push_docker_image_with_ref "${DOCKER_REPO}" "${FILEBROWSER_REF_VERSION}-busybox" && \
+        push_docker_image_with_ref "${DOCKER_REPO}" alpine && \
         push_docker_image_with_ref "${DOCKER_REPO}" "${FILEBROWSER_REF_VERSION}-alpine"
 
     ;;
     latest-*)
-        push_docker_image_with_ref "${DOCKER_REPO}" "busybox-${DOCKER_ARCH}"
-        push_docker_image_with_ref "${DOCKER_REPO}" "${FILEBROWSER_REF_VERSION}-busybox-${DOCKER_ARCH}"
-        push_docker_image_with_ref "${DOCKER_REPO}" "alpine-${DOCKER_ARCH}"
+        push_docker_image_with_ref "${DOCKER_REPO}" "busybox-${DOCKER_ARCH}" && \
+        push_docker_image_with_ref "${DOCKER_REPO}" "${FILEBROWSER_REF_VERSION}-busybox-${DOCKER_ARCH}" && \
+        push_docker_image_with_ref "${DOCKER_REPO}" "alpine-${DOCKER_ARCH}" && \
         push_docker_image_with_ref "${DOCKER_REPO}" "${FILEBROWSER_REF_VERSION}-alpine-${DOCKER_ARCH}"
     ;;
     edge)
-        push_docker_image_with_ref "${DOCKER_REPO}" edge-busybox
+        push_docker_image_with_ref "${DOCKER_REPO}" edge-busybox && \
         push_docker_image_with_ref "${DOCKER_REPO}" edge-alpine
     ;;
     edge-*)
-        push_docker_image_with_ref "${DOCKER_REPO}" "edge-busybox-${DOCKER_ARCH}"
+        push_docker_image_with_ref "${DOCKER_REPO}" "edge-busybox-${DOCKER_ARCH}" && \
         push_docker_image_with_ref "${DOCKER_REPO}" "edge-alpine-${DOCKER_ARCH}"
     ;;
 esac

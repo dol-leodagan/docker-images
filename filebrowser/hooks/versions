@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 export FILEBROWSER_REF_VERSION="v2.0.12"
-export FILEBROWSER_IMAGE_VERSION="1"
+export FILEBROWSER_IMAGE_VERSION="2"
 

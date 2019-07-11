@@ -48,14 +48,13 @@ case "${DOCKER_TAG}" in
         build \
             --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
-            --tag "${DOCKER_REPO}:alpine-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-${DOCKER_ARCH}" \
+            --tag "${DOCKER_REPO}:alpine-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-alpine-${DOCKER_ARCH}" \
             --target embedded-alpine && \
         build \
             --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
-            --tag "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-${DOCKER_ARCH}" \
+            --tag "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-busybox-${DOCKER_ARCH}" \
             --target embedded-busybox
-
         ;;
      edge)
         build \
