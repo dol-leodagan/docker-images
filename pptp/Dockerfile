@@ -23,6 +23,12 @@ RUN set -ex; \
     make IP="/sbin/ip" -j"${make_jobs}" ; \
     make install ;
 
+FROM scratch as filer
+
+COPY --from=builder /usr/sbin/pptp* /usr/sbin/
+COPY --from=builder /etc/ppp/options.pptp /etc/ppp/
+COPY entrypoint.sh /entrypoint.sh
+
 FROM __DOCKER_ARCH__/alpine:3.9 as final
 
 ARG BUILD_DATE
@@ -39,9 +45,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       maintainer="Leodagan <leodagan@freyad.net>"
 
 COPY qemu-__QEMU_ARCH__-static /usr/bin/
-COPY --from=builder /usr/sbin/pptp* /usr/sbin/
-COPY --from=builder /etc/ppp/options.pptp /etc/ppp/
-COPY entrypoint.sh /entrypoint.sh
+COPY --from=filer / /
 
 WORKDIR /
 

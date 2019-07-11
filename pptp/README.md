@@ -29,14 +29,15 @@ echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper
 Run
 ----
 ```
-docker run --rm -e SERVER=domain.tld -e USERNAME=user -e PASSWORD=secret --cap-add NET_ADMIN --device=/dev/ppp --dns 8.8.8.8 --dns 8.8.4.4 -name pptpclient -d leodagan/pptp
+docker run --rm -e SERVER=domain.tld -e USERNAME=user -e PASSWORD=secret --cap-add NET_ADMIN --device=/dev/ppp --dns 8.8.8.8 --dns 8.8.4.4 --name pptpclient -d leodagan/pptp
 ```
 
 Test
 ----
 ```
 docker run --rm --network container:pptpclient busybox wget -O- ifconfig.ovh
-
+```
+```
 Connecting to ifconfig.ovh (213.186.33.173:80)
 writing to stdout
 -                    100% |********************************|    16  0:00:00 ETA
@@ -66,7 +67,7 @@ services:
     cap_add:
       - NET_ADMIN
 
-  example:
+  test:
     image: busybox
     command: wget -O- ifconfig.ovh
     network: service:pptp
