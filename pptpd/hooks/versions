@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
 export PPTPD_REF_VERSION="1.4.0"
-export PPTPD_IMAGE_VERSION="2"
+export PPTPD_IMAGE_VERSION="3"
 

@@ -64,6 +64,8 @@ COPY --from=filer / /
 
 WORKDIR /
 
+EXPOSE 1723
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["pptpd", "--fg"]
