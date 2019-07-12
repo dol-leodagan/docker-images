@@ -54,7 +54,7 @@ executors:
       PROJECT_PATH: pptpd
       DOCKERFILE_PATH: Dockerfile
       DOCKER_REPO: leodagan/pptpd
-  pptpd:
+  butterfly:
     <<: *images-executor-defaults
     environment:
       PROJECT_PATH: butterfly
