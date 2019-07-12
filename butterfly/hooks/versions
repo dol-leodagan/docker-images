@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+export BUTTERFLY_REF_VERSION="3.2.5"
+export BUTTERFLY_IMAGE_VERSION="1"
+
