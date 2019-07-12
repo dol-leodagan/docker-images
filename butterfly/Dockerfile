@@ -23,18 +23,12 @@ RUN set -ex; \
     cd /butterfly ; \
     git checkout "${butterfly_version}" ; \
     python setup.py build ; \
-    python setup.py install -O2 ;
+    python setup.py install -O2 ; \
+    find "/usr/local/lib/python3.7/site-packages" ! -name "*.egg" -mindepth 1 -maxdepth 1 -exec rm -rf '{}' \;
 
 FROM scratch as filer
 
-COPY --from=builder /usr/local/lib/python3.7/site-packages/asn1crypto-0.24.0-py3.7.egg/ /usr/local/lib/python3.7/site-packages/asn1crypto-0.24.0-py3.7.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/cryptography-2.7-py3.7-linux-x86_64.egg/ /usr/local/lib/python3.7/site-packages/cryptography-2.7-py3.7-linux-x86_64.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/pycparser-2.19-py3.7.egg/ /usr/local/lib/python3.7/site-packages/pycparser-2.19-py3.7.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/butterfly-3.2.5-py3.7.egg/ /usr/local/lib/python3.7/site-packages/butterfly-3.2.5-py3.7.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/six-1.12.0-py3.7.egg/ /usr/local/lib/python3.7/site-packages/six-1.12.0-py3.7.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/cffi-1.12.3-py3.7-linux-x86_64.egg/ /usr/local/lib/python3.7/site-packages/cffi-1.12.3-py3.7-linux-x86_64.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/pyOpenSSL-19.0.0-py3.7.egg/ /usr/local/lib/python3.7/site-packages/pyOpenSSL-19.0.0-py3.7.egg/
-COPY --from=builder /usr/local/lib/python3.7/site-packages/tornado-6.0.3-py3.7-linux-x86_64.egg/ /usr/local/lib/python3.7/site-packages/tornado-6.0.3-py3.7-linux-x86_64.egg/
+COPY --from=builder /usr/local/lib/python3.7/site-packages/ /usr/local/lib/python3.7/site-packages/
 
 COPY --from=builder /usr/local/bin/b* /usr/local/bin/
 
