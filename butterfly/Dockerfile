@@ -35,6 +35,7 @@ COPY --from=builder /usr/local/lib/python3.7/site-packages/six-1.12.0-py3.7.egg/
 COPY --from=builder /usr/local/lib/python3.7/site-packages/cffi-1.12.3-py3.7-linux-x86_64.egg/ /usr/local/lib/python3.7/site-packages/cffi-1.12.3-py3.7-linux-x86_64.egg/
 COPY --from=builder /usr/local/lib/python3.7/site-packages/pyOpenSSL-19.0.0-py3.7.egg/ /usr/local/lib/python3.7/site-packages/pyOpenSSL-19.0.0-py3.7.egg/
 COPY --from=builder /usr/local/lib/python3.7/site-packages/tornado-6.0.3-py3.7-linux-x86_64.egg/ /usr/local/lib/python3.7/site-packages/tornado-6.0.3-py3.7-linux-x86_64.egg/
+
 COPY --from=builder /usr/local/bin/b* /usr/local/bin/
 
 FROM __DOCKER_ARCH__/python:3-alpine3.9 as final
