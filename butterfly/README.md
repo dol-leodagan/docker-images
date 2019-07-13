@@ -19,6 +19,28 @@ docker run --rm -d --entrypoint sh leodagan/butterfly -c 'apk add openssh-client
 ```
 You should **STRONGLY** consider adding a security layer (Reverse-proxy with SSL termination and authentication) or enabling *butterfly* secure options before exposing to public.
 
+Docker Compose
+----
+Example Docker Compose file with additional packages installation.
+
+```yaml
+version: '2'
+services:
+
+  butterfly:
+    image: leodagan/butterfly
+    entrypoint: sh -c 'apk add --no-cache openssh-client curl && exec butterfly.server.py "$$@"' --
+    command:
+      - --unsecure
+      - --host=0.0.0.0
+      - --port=80
+      - --i-hereby-declare-i-dont-want-any-security-whatsoever
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+```
+
 References
 ----
 https://github.com/paradoxxxzero/butterfly
