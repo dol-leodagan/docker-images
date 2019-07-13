@@ -49,7 +49,18 @@ RUN set -ex; \
             export GOARCH="arm64"; \
         ;; \
     esac ; \
-    go build -o filebrowser -ldflags "-s -w -X github.com/filebrowser/filebrowser/v2/version.CommitSHA=$(git rev-parse --short HEAD)" main.go
+    case "${filebrowser_version}" in \
+        master) \
+            DISPLAY_VERSION="$(git rev-parse --short HEAD)" \
+            ;; \
+        *) \
+            DISPLAY_VERSION="${filebrowser_version}" \
+            ;; \
+    esac ; \
+    go build -o filebrowser -ldflags \
+        "-s -w -X github.com/filebrowser/filebrowser/v2/version.CommitSHA=$(git rev-parse --short HEAD) \
+            -X github.com/filebrowser/filebrowser/v2/version.Version=leodagan/filebrowser-${DISPLAY_VERSION}" \
+        main.go
 
 
 FROM scratch as filer
