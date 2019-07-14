@@ -24,24 +24,24 @@ build()
 case "${DOCKER_TAG}" in
     latest)
         build \
-            --build-arg aria_version="tags/release-${ARIA2_REF_VERSION}.0" \
+            --build-arg aria_version="release-${ARIA2_REF_VERSION}.0" \
             --build-arg BUILD_VERSION="${ARIA2_REF_VERSION}-rc${ARIA2_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${ARIA2_REF_VERSION}" \
 			--target static && \
         build \
-            --build-arg aria_version="tags/release-${ARIA2_REF_VERSION}.0" \
+            --build-arg aria_version="release-${ARIA2_REF_VERSION}.0" \
             --build-arg BUILD_VERSION="${ARIA2_REF_VERSION}-rc${ARIA2_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:${ARIA2_REF_VERSION}-busybox" \
             --target embedded
         ;;
     latest-*)
         build \
-            --build-arg aria_version="tags/release-${ARIA2_REF_VERSION}.0" \
+            --build-arg aria_version="release-${ARIA2_REF_VERSION}.0" \
             --build-arg BUILD_VERSION="${ARIA2_REF_VERSION}-rc${ARIA2_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${ARIA2_REF_VERSION}-${DOCKER_ARCH}" \
             --target static && \
         build \
-            --build-arg aria_version="tags/release-${ARIA2_REF_VERSION}.0" \
+            --build-arg aria_version="release-${ARIA2_REF_VERSION}.0" \
             --build-arg BUILD_VERSION="${ARIA2_REF_VERSION}-rc${ARIA2_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${ARIA2_REF_VERSION}-busybox-${DOCKER_ARCH}" \
             --target embedded
