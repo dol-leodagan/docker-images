@@ -25,9 +25,8 @@ RUN set -ex; \
         ca-certificates \
         git ; \
     pip install --upgrade setuptools; \
-    git clone https://github.com/paradoxxxzero/butterfly.git ; \
+    git clone --branch "${butterfly_version}" --depth 1 https://github.com/paradoxxxzero/butterfly.git ; \
     cd /butterfly ; \
-    git checkout "${butterfly_version}" ; \
     python setup.py build ; \
     python setup.py install -O2 ; \
     find "/usr/local/lib/python3.7/site-packages" ! -name "*.egg" -mindepth 1 -maxdepth 1 -exec rm -rf '{}' \;

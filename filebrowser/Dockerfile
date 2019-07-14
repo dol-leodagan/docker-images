@@ -17,9 +17,8 @@ RUN set -ex; \
       git ; \
     export CGO_ENABLED=0 ; \
     export GO111MODULE=on ; \
-    git clone https://github.com/filebrowser/filebrowser.git ; \
+    git clone --branch "${filebrowser_version}" --depth 1 https://github.com/filebrowser/filebrowser.git ; \
     cd /filebrowser ; \
-    git checkout "${filebrowser_version}" ; \
     git submodule update --init --recursive ; \
     echo "### Downloading Dependencies" ; \
     go mod download ; \

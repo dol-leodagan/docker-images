@@ -25,13 +25,13 @@ build_final()
 case "${DOCKER_TAG}" in
     latest)
         build_final \
-            --build-arg pptpd_version="tags/${PPTPD_REF_VERSION}" \
+            --build-arg pptpd_version="${PPTPD_REF_VERSION}" \
             --build-arg BUILD_VERSION="${PPTPD_REF_VERSION}-rc${PPTPD_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTPD_REF_VERSION}"
         ;;
     latest-*)
         build_final \
-            --build-arg pptpd_version="tags/${PPTPD_REF_VERSION}" \
+            --build-arg pptpd_version="${PPTPD_REF_VERSION}" \
             --build-arg BUILD_VERSION="${PPTPD_REF_VERSION}-rc${PPTPD_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${PPTPD_REF_VERSION}-${DOCKER_ARCH}"
         ;;

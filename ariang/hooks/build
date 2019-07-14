@@ -31,13 +31,13 @@ esac
 case "${DOCKER_TAG}" in
     latest)
         build \
-            --build-arg ariang_version="tags/${ARIANG_REF_VERSION}" \
+            --build-arg ariang_version="${ARIANG_REF_VERSION}" \
             --build-arg BUILD_VERSION="${ARIANG_REF_VERSION}-rc${ARIANG_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}"  --tag "${DOCKER_REPO}:${ARIANG_REF_VERSION}"
     ;;
     latest-*)
         build \
-            --build-arg ariang_version="tags/${ARIANG_REF_VERSION}" \
+            --build-arg ariang_version="${ARIANG_REF_VERSION}" \
             --build-arg BUILD_VERSION="${ARIANG_REF_VERSION}-rc${ARIANG_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}"  --tag "${DOCKER_REPO}:${ARIANG_REF_VERSION}-${DOCKER_ARCH}"
     ;;

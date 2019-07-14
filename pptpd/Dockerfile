@@ -22,9 +22,8 @@ RUN set -ex; \
       gcc \
       make \
       git ; \
-    git clone https://git.code.sf.net/p/poptop/git pptpd ; \
+    git clone --branch "${pptpd_version}" --depth 1 https://git.code.sf.net/p/poptop/git pptpd ; \
     cd /pptpd ; \
-    git checkout "${pptpd_version}" ; \
     sed -i -e '64i #ifndef MSG_TRYHARD\n        # define MSG_TRYHARD    MSG_DONTROUTE\n#endif\n' bcrelay.c ; \
     ./configure CFLAGS="-O3 -pipe -fomit-frame-pointer" CXXFLAGS="-O3 -pipe -fomit-frame-pointer" \
                 --prefix=/usr \

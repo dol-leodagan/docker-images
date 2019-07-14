@@ -24,34 +24,34 @@ build()
 case "${DOCKER_TAG}" in
     latest)
         build \
-            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg filebrowser_version="${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}" \
             --target static && \
         build \
-            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg filebrowser_version="${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:alpine" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-alpine" \
             --target embedded-alpine && \
         build \
-            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg filebrowser_version="${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:busybox" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-busybox" \
             --target embedded-busybox
         ;;
     latest-*)
         build \
-            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg filebrowser_version="${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-${DOCKER_ARCH}" \
             --target static && \
         build \
-            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg filebrowser_version="${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:alpine-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-alpine-${DOCKER_ARCH}" \
             --target embedded-alpine && \
         build \
-            --build-arg filebrowser_version="tags/${FILEBROWSER_REF_VERSION}" \
+            --build-arg filebrowser_version="${FILEBROWSER_REF_VERSION}" \
             --build-arg BUILD_VERSION="${FILEBROWSER_REF_VERSION}-rc${FILEBROWSER_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:busybox-${DOCKER_ARCH}" --tag "${DOCKER_REPO}:${FILEBROWSER_REF_VERSION}-busybox-${DOCKER_ARCH}" \
             --target embedded-busybox

@@ -12,9 +12,8 @@ RUN set -ex; \
       npm \
       git; \
     npm install -g gulp; \
-    git clone "https://github.com/mayswind/AriaNg.git"; \
+    git clone --branch "${ariang_version}" --depth 1 "https://github.com/mayswind/AriaNg.git"; \
     cd /AriaNg; \
-    git checkout "${ariang_version}"; \
     npm install; \
     npm install natives@1.1.6; \
     gulp clean build

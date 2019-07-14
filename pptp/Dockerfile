@@ -22,9 +22,8 @@ RUN set -ex; \
       gcc \
       make \
       git ; \
-    git clone https://git.code.sf.net/p/pptpclient/git pptp ; \
+    git clone --branch "${pptp_version}" --depth 1 https://git.code.sf.net/p/pptpclient/git pptp ; \
     cd /pptp ; \
-    git checkout "${pptp_version}" ; \
     CFLAGS="-O3 -pipe -fomit-frame-pointer" CXXFLAGS="-O3 -pipe -fomit-frame-pointer" \
     make IP="/sbin/ip" -j"${make_jobs}" ; \
     make install ;

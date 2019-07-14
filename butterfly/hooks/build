@@ -25,13 +25,13 @@ build_final()
 case "${DOCKER_TAG}" in
     latest)
         build_final \
-            --build-arg butterfly_version="tags/${BUTTERFLY_REF_VERSION}" \
+            --build-arg butterfly_version="${BUTTERFLY_REF_VERSION}" \
             --build-arg BUILD_VERSION="${BUTTERFLY_REF_VERSION}-rc${BUTTERFLY_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${BUTTERFLY_REF_VERSION}"
         ;;
     latest-*)
         build_final \
-            --build-arg butterfly_version="tags/${BUTTERFLY_REF_VERSION}" \
+            --build-arg butterfly_version="${BUTTERFLY_REF_VERSION}" \
             --build-arg BUILD_VERSION="${PPTP_REF_VERSION}-rc${BUTTERFLY_IMAGE_VERSION}" \
             --tag "${DOCKER_REPO}:${DOCKER_TAG}" --tag "${DOCKER_REPO}:${BUTTERFLY_REF_VERSION}-${DOCKER_ARCH}"
         ;;
