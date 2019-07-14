@@ -11,6 +11,12 @@ COPY qemu-__QEMU_ARCH__-static /usr/bin/
 WORKDIR /
 
 RUN set -ex; \
+    case "__DOCKER_ARCH__" in \
+        arm32v6) export QEMU_CPU="arm1176" ;; \
+        arm32v7) export QEMU_CPU="cortex-a7" ;; \
+        arm64v8) export QEMU_CPU="cortex-a53" ;; \
+    esac ; \
+    uname -a ; \
     apk add --no-cache \
         gcc \
         musl-dev \
