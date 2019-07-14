@@ -9,7 +9,14 @@ ARG make_jobs=4
 
 COPY qemu-__QEMU_ARCH__-static /usr/bin/
 
-RUN apk add --no-cache \
+RUN set -ex; \
+    case "__DOCKER_ARCH__" in \
+        arm32v6) export QEMU_CPU="arm1176" ;; \
+        arm32v7) export QEMU_CPU="cortex-a7" ;; \
+        arm64v8) export QEMU_CPU="cortex-a53" ;; \
+    esac ; \
+    uname -a ; \
+    apk add --no-cache \
       expat-dev \
       openssl-dev \
       cppunit-dev \
@@ -25,11 +32,10 @@ RUN apk add --no-cache \
       automake \
       autoconf \
       libtool \
-      git && \
-    git clone https://github.com/aria2/aria2 && \
-    cd /aria2 && \
-    git checkout "${aria_version}" && \
-    autoreconf -i && \
+      git ; \
+    git clone --branch "${aria_version}" --depth 1 https://github.com/aria2/aria2 ; \
+    cd /aria2 ; \
+    autoreconf -i ; \
     ./configure ARIA2_STATIC=yes CFLAGS="-O3 -pipe -fomit-frame-pointer" CXXFLAGS="-O3 -pipe -fomit-frame-pointer" \
                 --enable-ssl \
                 --enable-bittorrent \
@@ -39,9 +45,9 @@ RUN apk add --no-cache \
                 --enable-largefile \
                 --disable-nls \
                 --without-libxml2 \
-                --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' && \
-    make -j"${make_jobs}" && \
-    make install && \
+                --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' ; \
+    make -j"${make_jobs}" ; \
+    make install ; \
     mkdir /download
 
 FROM scratch as filer

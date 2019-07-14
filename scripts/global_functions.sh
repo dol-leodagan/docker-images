@@ -65,7 +65,12 @@ qemu_test()
         docker run --rm "$@"
     else
         QARCH="$(docker_arch_to_qemu_arch "${ARCH}")"
-        docker run --rm -v "$(pwd)/qemu-${QARCH}-static:/usr/bin/qemu-${QARCH}-static" "$@"
+        case "${ARCH}" in
+            arm32v6) QEMU_CPU="arm1176" ;;
+            arm32v7) QEMU_CPU="cortex-a7" ;;
+            arm64v8) QEMU_CPU="cortex-a53" ;;
+        esac
+        docker run --rm -v "$(pwd)/qemu-${QARCH}-static:/usr/bin/qemu-${QARCH}-static" -e QEMU_CPU="${QEMU_CPU}" "$@"
     fi
 }
 
