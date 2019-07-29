@@ -12,7 +12,7 @@ RUN set -ex; \
       npm \
       git; \
     npm install -g gulp; \
-    git clone --branch "${ariang_version}" --depth 1 "https://github.com/mayswind/AriaNg.git"; \
+    git clone --branch "${ariang_version}" --depth 1 "https://github.com/dol-leodagan/AriaNg.git"; \
     cd /AriaNg; \
     npm install; \
     npm install natives@1.1.6; \
